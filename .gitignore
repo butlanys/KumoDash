@@ -126,3 +126,6 @@ $RECYCLE.BIN/
 ### KumoDash Specific ###
 # Ignore artifacts directory
 .gemini/
+
+# ai docs
+.ai_docs/
