@@ -127,5 +127,12 @@ $RECYCLE.BIN/
 # Ignore artifacts directory
 .gemini/
 
-# ai docs
+# AI docs
 .ai_docs/
+
+# Backend data (database, etc.)
+backend/data/
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
