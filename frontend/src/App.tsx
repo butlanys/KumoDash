@@ -1,12 +1,19 @@
-import { Routes, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import SetupPage from './pages/setup/SetupPage'
+import LoginPage from './pages/LoginPage'
+import { AuthProvider } from './features/auth/hooks/useAuth'
 
 function App() {
   return (
-    <div className="min-h-screen bg-background font-sans antialiased text-foreground">
-      <Routes>
-        <Route path="/" element={<div className="flex h-screen items-center justify-center text-4xl font-bold">Welcome to KumoDash</div>} />
-      </Routes>
-    </div>
+    <Router>
+      <AuthProvider>
+        <Routes>
+          <Route path="/setup/:token" element={<SetupPage />} />
+          <Route path="/:prefix" element={<LoginPage />} />
+          <Route path="*" element={<div>404 Not Found</div>} />
+        </Routes>
+      </AuthProvider>
+    </Router>
   )
 }
 

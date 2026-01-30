@@ -139,8 +139,8 @@ impl SetupService {
         .await?;
 
         // Save security settings
-        if let Some(prefix) = &security.api_path_prefix {
-            Self::save_setting(pool, "api_path_prefix", prefix).await?;
+        if let Some(prefix) = &security.auth_path_prefix {
+            Self::save_setting(pool, "auth_path_prefix", prefix).await?;
         }
 
         if let Some(timeout) = security.session_timeout_minutes {

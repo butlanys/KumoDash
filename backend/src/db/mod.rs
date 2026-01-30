@@ -50,11 +50,16 @@ CREATE INDEX IF NOT EXISTS idx_audit_logs_user_id ON audit_logs(user_id);
 CREATE INDEX IF NOT EXISTS idx_audit_logs_action ON audit_logs(action);
 CREATE INDEX IF NOT EXISTS idx_audit_logs_created_at ON audit_logs(created_at);
 
--- System settings table
+-- System settings table with simplified TLS support
 CREATE TABLE IF NOT EXISTS system_settings (
     key VARCHAR(100) PRIMARY KEY,
     value TEXT NOT NULL,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    tls_cert TEXT DEFAULT NULL,
+    tls_key TEXT DEFAULT NULL,
+    tls_cert_info TEXT DEFAULT NULL,
+    https_port INTEGER DEFAULT 8443,
+    debug_mode BOOLEAN DEFAULT false
 );
 "#;
 

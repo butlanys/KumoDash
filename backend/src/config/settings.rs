@@ -1,144 +1,116 @@
-//! Application configuration
-//!
-//! Configuration is loaded from:
-//! 1. CLI arguments (port, data directory)
-//! 2. Database (JWT secret, session timeout, etc.)
+//! Application settings
 
-use clap::Parser;
 use rand::Rng;
+use serde::{Deserialize, Serialize};
 use sqlx::SqlitePool;
+use tracing::warn;
 
-use crate::utils::error::AppError;
-
-/// CLI arguments
-#[derive(Parser, Debug, Clone)]
-#[command(name = "kumadash")]
-#[command(about = "KumoDash - Lightweight Cloud Server Control Panel")]
-#[command(version)]
-pub struct CliArgs {
-    /// Server port
-    #[arg(short, long, default_value = "8080")]
-    pub port: u16,
-
-    /// Data directory path
-    #[arg(short, long, default_value = "./data")]
-    pub data_dir: String,
-
-    /// Bind address
-    #[arg(short, long, default_value = "0.0.0.0")]
-    pub bind: String,
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct SecuritySettings {
+    pub auth_path_prefix: String,
+    pub session_timeout_minutes: u32,
 }
 
-impl CliArgs {
-    /// Get database URL
-    pub fn database_url(&self) -> String {
-        format!("sqlite:{}/kumadash.db?mode=rwc", self.data_dir)
-    }
-
-    /// Get server address
-    pub fn server_addr(&self) -> String {
-        format!("{}:{}", self.bind, self.port)
-    }
-}
-
-/// Runtime settings loaded from database
 #[derive(Debug, Clone)]
 pub struct Settings {
-    /// JWT secret key
     pub jwt_secret: String,
-    /// Access token expiration in minutes
     pub jwt_access_token_expires_minutes: i64,
-    /// Refresh token expiration in days
     pub jwt_refresh_token_expires_days: i64,
-    /// API path prefix
-    pub api_path_prefix: String,
-    /// Session timeout in minutes
-    pub session_timeout_minutes: i64,
-}
-
-impl Default for Settings {
-    fn default() -> Self {
-        Self {
-            jwt_secret: String::new(),
-            jwt_access_token_expires_minutes: 15,
-            jwt_refresh_token_expires_days: 7,
-            api_path_prefix: "/api/v1".to_string(),
-            session_timeout_minutes: 15,
-        }
-    }
+    pub master_key: Vec<u8>,
+    pub security: SecuritySettings,
+    pub setup_token: String,
 }
 
 impl Settings {
-    /// Load settings from database, generating defaults if not exist
-    pub async fn load_from_db(pool: &SqlitePool) -> Result<Self, AppError> {
-        let mut settings = Settings::default();
+    /// Load settings from database or create defaults
+    pub async fn load_from_db(pool: &SqlitePool) -> anyhow::Result<Self> {
+        // Get master key from environment or generate temporary one
+        let master_key = std::env::var("KUMO_MASTER_KEY")
+            .map(|k| k.as_bytes().to_vec())
+            .unwrap_or_else(|_| {
+                warn!("KUMO_MASTER_KEY not set, using temporary master key. Certificate will not persist across restarts.");
+                b"temporary_master_key_for_debug_only_123".to_vec()
+            });
 
-        // Load JWT secret (generate if not exists)
-        settings.jwt_secret = match Self::get_setting(pool, "jwt_secret").await? {
-            Some(secret) => secret,
-            None => {
-                let secret = Self::generate_jwt_secret();
-                Self::set_setting(pool, "jwt_secret", &secret).await?;
-                tracing::info!("Generated new JWT secret");
-                secret
-            }
-        };
+        // Get JWT secret (in production, this should be set via environment)
+        let jwt_secret = std::env::var("JWT_SECRET")
+            .unwrap_or_else(|_| "development_jwt_secret_key_123".to_string());
 
-        // Load other settings with defaults
-        if let Some(val) = Self::get_setting(pool, "jwt_access_token_expires_minutes").await? {
-            settings.jwt_access_token_expires_minutes = val.parse().unwrap_or(15);
-        }
+        // Get or generate setup token
+        let setup_token = Self::get_or_generate_setup_token(pool).await?;
 
-        if let Some(val) = Self::get_setting(pool, "jwt_refresh_token_expires_days").await? {
-            settings.jwt_refresh_token_expires_days = val.parse().unwrap_or(7);
-        }
-
-        if let Some(val) = Self::get_setting(pool, "api_path_prefix").await? {
-            settings.api_path_prefix = val;
-        }
-
-        if let Some(val) = Self::get_setting(pool, "session_timeout").await? {
-            settings.session_timeout_minutes = val.parse().unwrap_or(15);
-        }
-
-        Ok(settings)
-    }
-
-    /// Generate a secure random JWT secret
-    fn generate_jwt_secret() -> String {
-        rand::thread_rng()
-            .sample_iter(&rand::distributions::Alphanumeric)
-            .take(64)
-            .map(char::from)
-            .collect()
-    }
-
-    /// Get a setting from database
-    async fn get_setting(pool: &SqlitePool, key: &str) -> Result<Option<String>, AppError> {
-        let result = sqlx::query_scalar::<_, String>(
-            "SELECT value FROM system_settings WHERE key = $1"
+        // Load auth_path_prefix from database
+        let auth_path_prefix = sqlx::query_scalar::<_, String>(
+            "SELECT value FROM system_settings WHERE key = 'auth_path_prefix'",
         )
-        .bind(key)
+        .fetch_optional(pool)
+        .await?
+        .unwrap_or_else(|| "/login".to_string());
+
+        // Load session_timeout from database
+        let session_timeout_minutes = sqlx::query_scalar::<_, String>(
+            "SELECT value FROM system_settings WHERE key = 'session_timeout'",
+        )
+        .fetch_optional(pool)
+        .await?
+        .and_then(|v| v.parse().ok())
+        .unwrap_or(15);
+
+        Ok(Self {
+            jwt_secret,
+            jwt_access_token_expires_minutes: 15,
+            jwt_refresh_token_expires_days: 7,
+            master_key,
+            security: SecuritySettings {
+                auth_path_prefix,
+                session_timeout_minutes,
+            },
+            setup_token,
+        })
+    }
+
+    /// Get existing setup token or generate new one
+    async fn get_or_generate_setup_token(pool: &SqlitePool) -> anyhow::Result<String> {
+        let result = sqlx::query_scalar::<_, String>(
+            "SELECT value FROM system_settings WHERE key = 'setup_token'",
+        )
         .fetch_optional(pool)
         .await?;
 
-        Ok(result)
-    }
+        match result {
+            Some(json) => {
+                // Try to parse as JSON first (new format)
+                if let Ok(setup_token) = serde_json::from_str::<crate::services::setup::SetupToken>(&json) {
+                    Ok(setup_token.token)
+                } else {
+                    // Fallback: treat as plain token string (old format)
+                    Ok(json)
+                }
+            }
+            None => {
+                // Generate new token with expiration
+                let setup_token = crate::services::setup::SetupToken {
+                    token: rand::thread_rng()
+                        .sample_iter(&rand::distributions::Alphanumeric)
+                        .take(64)
+                        .map(char::from)
+                        .collect(),
+                    expires_at: chrono::Utc::now() + chrono::Duration::minutes(30),
+                    used: false,
+                };
 
-    /// Set a setting in database
-    async fn set_setting(pool: &SqlitePool, key: &str, value: &str) -> Result<(), AppError> {
-        sqlx::query(
-            r#"
-            INSERT INTO system_settings (key, value, updated_at)
-            VALUES ($1, $2, datetime('now'))
-            ON CONFLICT(key) DO UPDATE SET value = $2, updated_at = datetime('now')
-            "#
-        )
-        .bind(key)
-        .bind(value)
-        .execute(pool)
-        .await?;
+                let token_json = serde_json::to_string(&setup_token)?;
 
-        Ok(())
+                sqlx::query(
+                    "INSERT INTO system_settings (key, value, updated_at) VALUES ('setup_token', $1, $2)",
+                )
+                .bind(&token_json)
+                .bind(chrono::Utc::now())
+                .execute(pool)
+                .await?;
+
+                Ok(setup_token.token)
+            }
+        }
     }
 }

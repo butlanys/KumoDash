@@ -49,7 +49,7 @@ pub struct SetupRequest {
 /// Security settings from setup wizard
 #[derive(Debug, Deserialize)]
 pub struct SecuritySettings {
-    pub api_path_prefix: Option<String>,
+    pub auth_path_prefix: Option<String>,
     pub session_timeout_minutes: Option<i64>,
 }
 
@@ -65,6 +65,7 @@ pub struct AdminCredentials {
 pub struct LoginRequest {
     pub username: String,
     pub password: String,
+    pub auth_path: String,
 }
 
 /// Password change request

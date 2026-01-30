@@ -29,9 +29,7 @@ pub struct AppState {
 /// Create the main application router
 pub fn create_router(state: AppState) -> Router {
     // Setup routes (protected by setup_guard - returns 404 after initialization)
-    let setup_routes = Router::new()
-        .route("/api/setup/validate-token", post(crate::handlers::setup::validate_token))
-        .route("/api/setup/init", post(crate::handlers::setup::init))
+    let setup_routes = setup::create_setup_router()
         .layer(middleware::from_fn(setup_guard));
 
     // Public auth routes (always accessible)

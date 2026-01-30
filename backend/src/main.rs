@@ -5,13 +5,13 @@
 use std::sync::Arc;
 
 use clap::Parser;
-use tokio::net::TcpListener;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
 use kumadash::{
-    api::{create_router, AppState},
+    api::AppState,
     config::{CliArgs, Settings},
     db,
+    server,
     services::SetupService,
     SETUP_ROUTES_ENABLED,
 };
@@ -31,7 +31,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .init();
 
     tracing::info!("Starting KumoDash Backend v0.1.0");
-    tracing::info!("Data directory: {}", args.data_dir);
+    tracing::info!("Data directory: {}", args.data_dir.display());
 
     // Ensure data directory exists
     std::fs::create_dir_all(&args.data_dir)?;
@@ -44,6 +44,17 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Initialize schema (embedded in code, no migration files)
     db::init_schema(&pool).await?;
     tracing::info!("Database schema initialized");
+
+    // Check debug mode from CLI args and save to database
+    if args.is_debug_mode() {
+        sqlx::query(
+            "INSERT INTO system_settings (key, value, updated_at) VALUES ('debug_mode', 'true', datetime('now'))
+             ON CONFLICT(key) DO UPDATE SET value = 'true', updated_at = datetime('now')"
+        )
+        .execute(&pool)
+        .await?;
+        tracing::info!("Debug mode enabled via CLI");
+    }
 
     // Load settings from database
     let settings = Settings::load_from_db(&pool).await?;
@@ -60,19 +71,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // Create app state
     let state = AppState {
-        pool,
+        pool: pool.clone(),
         settings: Arc::new(settings),
     };
 
-    // Create router
-    let app = create_router(state);
-
-    // Start server
-    let addr = args.server_addr();
-    let listener = TcpListener::bind(&addr).await?;
-    tracing::info!("Server listening on http://{}", addr);
-
-    axum::serve(listener, app).await?;
+    // Start server based on database configuration
+    server::https::ServerManager::start(state).await?;
 
     Ok(())
 }

@@ -13,6 +13,15 @@ pub async fn login(
     State(state): State<AppState>,
     Json(payload): Json<LoginRequest>,
 ) -> Result<ApiResponse<TokenPairResponse>, AppError> {
+    // Validate auth path prefix
+    let configured_prefix = &state.settings.security.auth_path_prefix;
+    let provided_path = payload.auth_path.trim_matches('/');
+    let expected_path = configured_prefix.trim_matches('/');
+    
+    if provided_path != expected_path {
+        return Err(AppError::NotFound("页面不存在".to_string()));
+    }
+
     let tokens = AuthService::login(
         &state.pool,
         &state.settings,
