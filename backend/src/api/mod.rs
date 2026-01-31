@@ -18,6 +18,7 @@ use tower_http::trace::TraceLayer;
 use crate::config::Settings;
 use crate::middleware::auth::auth_middleware;
 use crate::middleware::setup::setup_guard;
+use crate::static_files::{serve_index, serve_static};
 
 /// Shared application state
 #[derive(Clone)]
@@ -48,11 +49,18 @@ pub fn create_router(state: AppState) -> Router {
         .route("/api/v1/system/status", get(crate::handlers::system::get_status))
         .layer(middleware::from_fn_with_state(state.clone(), auth_middleware));
 
+    // Static file routes for embedded frontend
+    let static_routes = Router::new()
+        .route("/", get(serve_index))
+        .route("/assets/{*path}", get(serve_static))
+        .fallback(get(serve_index));
+
     // Combine routes
     Router::new()
         .merge(setup_routes)
         .merge(public_routes)
         .merge(protected_routes)
+        .merge(static_routes)
         .layer(
             CorsLayer::new()
                 .allow_origin(Any)

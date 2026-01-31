@@ -75,7 +75,7 @@ pub async fn init(
         SetupInitResponse {
             access_token: token_pair.access_token,
             refresh_token: token_pair.refresh_token,
-            redirect_url: "/login".to_string(),
+            redirect_url: "/".to_string(),
         },
         t!("success.setup.completed").to_string(),
     ))

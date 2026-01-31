@@ -18,6 +18,7 @@ pub mod response;
 pub mod server;
 pub mod services;
 pub mod utils;
+pub mod static_files;
 
 use std::sync::atomic::AtomicBool;
 

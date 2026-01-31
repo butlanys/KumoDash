@@ -18,6 +18,8 @@ aws-lc-rs = "1.0"
 aead = "0.5"
 base64 = "0.21"
 anyhow = "1.0"
+mime_guess = "2"
+rust-embed = "8"
 
 # Serialization
 serde = { version = "1", features = ["derive"] }

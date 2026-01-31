@@ -25,18 +25,18 @@ function AppRoutes() {
     <HeroUIProvider navigate={navigate} useHref={useHref}>
       <AuthProvider>
         <Routes>
-          {/* Setup route */}
+          {/* Setup route - must be before /:prefix */}
           <Route path="/setup/:token" element={<SetupPage />} />
           
-          {/* Protected Routes - explicit paths */}
+          {/* Login route with dynamic prefix */}
+          <Route path="/:prefix" element={<LoginPage />} />
+          
+          {/* Protected Routes */}
           <Route path="/" element={<AuthGuard><AppLayout /></AuthGuard>}>
             <Route index element={<DashboardPage />} />
             <Route path="servers" element={<div>Servers (TODO)</div>} />
             <Route path="settings" element={<div>Settings (TODO)</div>} />
           </Route>
-          
-          {/* Login route with dynamic prefix */}
-          <Route path="/:prefix" element={<LoginPage />} />
           
           {/* 404 */}
           <Route path="*" element={<NotFoundPage />} />

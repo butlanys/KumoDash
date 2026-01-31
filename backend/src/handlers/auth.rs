@@ -21,12 +21,24 @@ pub struct ValidatePathResponse {
     pub valid: bool,
 }
 
+/// Get auth path prefix from database (always fresh)
+async fn get_auth_path_prefix(pool: &sqlx::SqlitePool) -> String {
+    sqlx::query_scalar::<_, String>(
+        "SELECT value FROM system_settings WHERE key = 'auth_path_prefix'",
+    )
+    .fetch_optional(pool)
+    .await
+    .ok()
+    .flatten()
+    .unwrap_or_else(|| "/login".to_string())
+}
+
 /// Validate login path handler
 pub async fn validate_path(
     State(state): State<AppState>,
     Json(payload): Json<ValidatePathRequest>,
 ) -> ApiResponse<ValidatePathResponse> {
-    let configured_prefix = &state.settings.security.auth_path_prefix;
+    let configured_prefix = get_auth_path_prefix(&state.pool).await;
     let provided_path = payload.prefix.trim_matches('/');
     let expected_path = configured_prefix.trim_matches('/');
     
@@ -39,8 +51,8 @@ pub async fn login(
     State(state): State<AppState>,
     Json(payload): Json<LoginRequest>,
 ) -> Result<ApiResponse<TokenPairResponse>, AppError> {
-    // Validate auth path prefix
-    let configured_prefix = &state.settings.security.auth_path_prefix;
+    // Validate auth path prefix (read fresh from database)
+    let configured_prefix = get_auth_path_prefix(&state.pool).await;
     let provided_path = payload.auth_path.trim_matches('/');
     let expected_path = configured_prefix.trim_matches('/');
     

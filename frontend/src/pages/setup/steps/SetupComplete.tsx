@@ -14,6 +14,7 @@ interface SetupCompleteProps {
     username: string
     password: string
     token: string
+    allowWeakPassword?: boolean
   }
 }
 
@@ -54,6 +55,16 @@ export const SetupComplete = ({ setupData }: SetupCompleteProps) => {
       const data = await response.json()
 
       if (data.success) {
+        // Save tokens returned from setup
+        const { access_token, refresh_token } = data.data
+        if (access_token && refresh_token) {
+          localStorage.setItem('access_token', access_token)
+          localStorage.setItem('refresh_token', refresh_token)
+          localStorage.setItem('user', JSON.stringify({
+            username: setupData.username,
+            role: 'admin'
+          }))
+        }
         setSuccess(true)
       } else {
         setError(data.error?.message || data.message || t('setup-failed'))
@@ -74,13 +85,12 @@ export const SetupComplete = ({ setupData }: SetupCompleteProps) => {
   useEffect(() => {
     if (!success) return
 
-    const loginPath = setupData.authPathPrefix
-
     const timer = setInterval(() => {
       setCountdown((prev) => {
         if (prev <= 1) {
           clearInterval(timer)
-          navigate(loginPath)
+          // Redirect to dashboard since user is already logged in
+          window.location.href = '/'
           return 0
         }
         return prev - 1
@@ -88,7 +98,7 @@ export const SetupComplete = ({ setupData }: SetupCompleteProps) => {
     }, 1000)
 
     return () => clearInterval(timer)
-  }, [success, navigate, setupData.authPathPrefix])
+  }, [success])
 
   if (loading) {
     return (

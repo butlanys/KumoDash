@@ -19,6 +19,9 @@ export function getApiHeaders(): Record<string, string> {
   }
 }
 
+// Flag to prevent multiple refresh attempts
+let isRefreshing = false
+
 // Request interceptor for adding token and language
 api.interceptors.request.use(
   (config) => {
@@ -41,29 +44,48 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config
     
-    // If error is 401 and not a retry, try to refresh token
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    // Skip refresh logic for refresh endpoint itself
+    if (originalRequest.url === '/auth/refresh') {
+      // Clear tokens and redirect to login
+      localStorage.removeItem('access_token')
+      localStorage.removeItem('refresh_token')
+      localStorage.removeItem('user')
+      window.location.href = '/404'
+      return Promise.reject(error)
+    }
+    
+    // If error is 401 and not already retrying
+    if (error.response?.status === 401 && !originalRequest._retry && !isRefreshing) {
       originalRequest._retry = true
+      isRefreshing = true
       
       try {
         const refreshToken = localStorage.getItem('refresh_token')
         if (refreshToken) {
-          const response = await api.post('/auth/refresh', {
+          // Use axios directly to avoid interceptor loop
+          const response = await axios.post('/api/v1/auth/refresh', {
             refresh_token: refreshToken
+          }, {
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept-Language': i18n.language || 'zh-CN',
+            }
           })
           
           const { access_token, refresh_token } = response.data.data
           localStorage.setItem('access_token', access_token)
           localStorage.setItem('refresh_token', refresh_token)
           
+          isRefreshing = false
           originalRequest.headers.Authorization = `Bearer ${access_token}`
           return api(originalRequest)
         }
       } catch (refreshError) {
-        console.error('Token refresh failed:', refreshError)
+        isRefreshing = false
         localStorage.removeItem('access_token')
         localStorage.removeItem('refresh_token')
-        window.location.href = '/login'
+        localStorage.removeItem('user')
+        window.location.href = '/404'
         return Promise.reject(refreshError)
       }
     }
