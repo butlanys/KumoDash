@@ -58,6 +58,7 @@ pub struct SecuritySettings {
 pub struct AdminCredentials {
     pub username: String,
     pub password: String,
+    pub allow_weak_password: Option<bool>,
 }
 
 /// Login request

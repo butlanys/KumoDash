@@ -2,9 +2,10 @@ import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
-import { Loader2, CheckCircle, XCircle, RefreshCw } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { CheckCircle, XCircle, RefreshCw } from 'lucide-react'
+import { Button, Spinner } from '@heroui/react'
 import { cn } from '@/lib/utils'
+import { getApiHeaders } from '@/lib/api'
 
 interface SetupCompleteProps {
   setupData: {
@@ -35,9 +36,7 @@ export const SetupComplete = ({ setupData }: SetupCompleteProps) => {
     try {
       const response = await fetch('/api/setup/init', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers: getApiHeaders(),
         body: JSON.stringify({
           token: setupData.token,
           security: {
@@ -46,7 +45,8 @@ export const SetupComplete = ({ setupData }: SetupCompleteProps) => {
           },
           admin: {
             username: setupData.username,
-            password: setupData.password
+            password: setupData.password,
+            allow_weak_password: setupData.allowWeakPassword
           }
         })
       })
@@ -93,8 +93,8 @@ export const SetupComplete = ({ setupData }: SetupCompleteProps) => {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center py-8">
-        <Loader2 className="h-8 w-8 text-primary animate-spin mb-4" />
-        <p className="text-sm text-muted-foreground">{t('completing-setup')}</p>
+        <Spinner color="primary" className="mb-4" />
+        <p className="text-sm text-default-500">{t('completing-setup')}</p>
       </div>
     )
   }
@@ -102,12 +102,12 @@ export const SetupComplete = ({ setupData }: SetupCompleteProps) => {
   if (error) {
     return (
       <div className="flex flex-col items-center justify-center py-8">
-        <div className="bg-destructive/10 rounded-full p-3 mb-4">
-          <XCircle className="h-8 w-8 text-destructive" />
+        <div className="bg-danger/10 rounded-full p-3 mb-4">
+          <XCircle className="h-8 w-8 text-danger" />
         </div>
         <h3 className="font-semibold mb-1">{t('setup-failed')}</h3>
-        <p className="text-sm text-destructive text-center mb-4">{error}</p>
-        <Button variant="outline" size="sm" onClick={completeSetup}>
+        <p className="text-sm text-danger text-center mb-4">{error}</p>
+        <Button variant="bordered" size="sm" onPress={completeSetup}>
           <RefreshCw className="mr-2 h-4 w-4" />
           {t('retry')}
         </Button>
@@ -145,7 +145,7 @@ export const SetupComplete = ({ setupData }: SetupCompleteProps) => {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="text-sm text-muted-foreground text-center mb-4"
+          className="text-sm text-default-500 text-center mb-4"
         >
           {t('redirecting-in', { seconds: countdown })}
         </motion.p>
@@ -156,7 +156,7 @@ export const SetupComplete = ({ setupData }: SetupCompleteProps) => {
           transition={{ delay: 0.6 }}
           className="w-full max-w-xs"
         >
-          <div className="w-full bg-muted rounded-full h-1.5 overflow-hidden">
+          <div className="w-full bg-default-200 rounded-full h-1.5 overflow-hidden">
             <motion.div
               initial={{ width: '0%' }}
               animate={{ width: '100%' }}

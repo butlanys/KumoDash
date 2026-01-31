@@ -2,6 +2,12 @@
 //!
 //! A lightweight cloud server control panel backend built with Axum.
 
+#[macro_use]
+extern crate rust_i18n;
+
+// Initialize i18n with locales directory, fallback to zh-CN
+i18n!("locales", fallback = "zh-CN");
+
 pub mod api;
 pub mod config;
 pub mod db;

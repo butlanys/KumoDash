@@ -1,49 +1,50 @@
-//! Application error types
+//! Application error types with i18n support
 
 use axum::{
     http::StatusCode,
     response::{IntoResponse, Response},
     Json,
 };
+use rust_i18n::t;
 use serde::Serialize;
 
 /// Application error type
 #[derive(Debug, thiserror::Error)]
 pub enum AppError {
-    #[error("认证失败: {0}")]
+    #[error("AUTH_INVALID_CREDENTIALS")]
     AuthError(String),
 
-    #[error("Token 已过期")]
+    #[error("AUTH_TOKEN_EXPIRED")]
     TokenExpired,
 
-    #[error("Token 无效")]
+    #[error("AUTH_TOKEN_INVALID")]
     TokenInvalid,
 
-    #[error("账户已锁定")]
+    #[error("AUTH_ACCOUNT_LOCKED")]
     AccountLocked,
 
-    #[error("权限不足")]
+    #[error("AUTH_PERMISSION_DENIED")]
     PermissionDenied,
 
-    #[error("资源未找到: {0}")]
+    #[error("RESOURCE_NOT_FOUND")]
     NotFound(String),
 
-    #[error("验证失败: {0}")]
+    #[error("VALIDATION_ERROR")]
     ValidationError(String),
 
-    #[error("请求过于频繁")]
+    #[error("RATE_LIMIT_EXCEEDED")]
     RateLimitExceeded,
 
-    #[error("安装链接无效或已过期")]
+    #[error("SETUP_INVALID_TOKEN")]
     SetupInvalidToken,
 
-    #[error("系统已初始化")]
+    #[error("SETUP_ALREADY_COMPLETED")]
     SetupAlreadyCompleted,
 
-    #[error("数据库错误: {0}")]
+    #[error("DATABASE_ERROR")]
     DatabaseError(#[from] sqlx::Error),
 
-    #[error("内部错误")]
+    #[error("INTERNAL_ERROR")]
     InternalError(String),
 }
 
@@ -97,6 +98,24 @@ impl AppError {
             AppError::InternalError(_) => StatusCode::INTERNAL_SERVER_ERROR,
         }
     }
+
+    /// Get the localized error message using current locale
+    pub fn localized_message(&self) -> String {
+        match self {
+            AppError::AuthError(reason) => t!("errors.auth.invalid_credentials", reason = reason).to_string(),
+            AppError::TokenExpired => t!("errors.auth.token_expired").to_string(),
+            AppError::TokenInvalid => t!("errors.auth.token_invalid").to_string(),
+            AppError::AccountLocked => t!("errors.auth.account_locked").to_string(),
+            AppError::PermissionDenied => t!("errors.auth.permission_denied").to_string(),
+            AppError::NotFound(resource) => t!("errors.resource.not_found", resource = resource).to_string(),
+            AppError::ValidationError(reason) => t!("errors.validation.generic", reason = reason).to_string(),
+            AppError::RateLimitExceeded => t!("errors.rate_limit.exceeded").to_string(),
+            AppError::SetupInvalidToken => t!("errors.setup.invalid_token").to_string(),
+            AppError::SetupAlreadyCompleted => t!("errors.setup.already_completed").to_string(),
+            AppError::DatabaseError(e) => t!("errors.database.error", detail = e.to_string()).to_string(),
+            AppError::InternalError(_) => t!("errors.internal.error").to_string(),
+        }
+    }
 }
 
 impl IntoResponse for AppError {
@@ -106,7 +125,7 @@ impl IntoResponse for AppError {
             success: false,
             error: ErrorDetail {
                 code: self.code().to_string(),
-                message: self.to_string(),
+                message: self.localized_message(),
             },
         };
 

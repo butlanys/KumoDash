@@ -1,6 +1,7 @@
 //! Admin service
 
 use chrono::Utc;
+use rust_i18n::t;
 use sqlx::SqlitePool;
 
 use crate::models::Admin;
@@ -31,11 +32,11 @@ impl AdminService {
         // Get current admin
         let admin = Self::get(pool)
             .await?
-            .ok_or_else(|| AppError::NotFound("管理员不存在".to_string()))?;
+            .ok_or_else(|| AppError::NotFound(t!("errors.resource.admin_not_found").to_string()))?;
 
         // Verify current password
         if !verify_password(current_password, &admin.password_hash)? {
-            return Err(AppError::AuthError("当前密码错误".to_string()));
+            return Err(AppError::AuthError(t!("errors.auth.current_password_wrong").to_string()));
         }
 
         // Validate new password strength

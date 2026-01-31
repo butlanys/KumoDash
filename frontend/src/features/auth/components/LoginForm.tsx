@@ -1,10 +1,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button, Input } from '@heroui/react'
 import { useAuth } from '../hooks/useAuth'
 
 export const LoginForm = () => {
@@ -35,51 +32,44 @@ export const LoginForm = () => {
   }
 
   return (
-    <Card className="w-full max-w-md mx-auto">
-      <CardHeader>
-        <CardTitle className="text-2xl font-bold text-center">{t('welcome-back')}</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {error && (
-            <div className="p-3 text-sm text-destructive bg-destructive/10 rounded-md">
-              {error}
-            </div>
-          )}
-          
-          <div className="space-y-2">
-            <Label htmlFor="username">{t('username')}</Label>
-            <Input
-              id="username"
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              placeholder={t('enter-username')}
-              required
-            />
-          </div>
-          
-          <div className="space-y-2">
-            <Label htmlFor="password">{t('password')}</Label>
-            <Input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder={t('enter-password')}
-              required
-            />
-          </div>
-          
-          <Button 
-            type="submit" 
-            className="w-full"
-            disabled={isLoading}
-          >
-            {isLoading ? t('signing-in') : t('sign-in')}
-          </Button>
-        </form>
-      </CardContent>
-    </Card>
+    <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+      {error && (
+        <div className="p-4 text-sm text-danger-600 bg-danger-50 dark:bg-danger-900/20 border border-danger-100 dark:border-danger-900/30 rounded-medium shadow-sm">
+          {error}
+        </div>
+      )}
+      
+      <div className="flex flex-col gap-4">
+        <Input
+          label={t('username')}
+          type="text"
+          value={username}
+          onValueChange={setUsername}
+          placeholder={t('enter-username')}
+          isRequired
+          variant="bordered"
+        />
+        
+        <Input
+          label={t('password')}
+          type="password"
+          value={password}
+          onValueChange={setPassword}
+          placeholder={t('enter-password')}
+          isRequired
+          variant="bordered"
+        />
+      </div>
+      
+      <Button 
+        type="submit" 
+        color="primary"
+        fullWidth
+        isLoading={isLoading}
+        size="lg"
+      >
+        {isLoading ? t('signing-in') : t('sign-in')}
+      </Button>
+    </form>
   )
 }

@@ -4,10 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { motion } from 'framer-motion'
 import { Shield, Clock, ArrowLeft, ArrowRight } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { cn } from '@/lib/utils'
+import { Button, Input } from '@heroui/react'
 
 interface SetupSecurityProps {
   initialData: {
@@ -57,62 +54,50 @@ export const SetupSecurity = ({ initialData, onNext, onBack }: SetupSecurityProp
     >
       <div className="text-center">
         <h2 className="text-xl font-semibold">{t('security-settings')}</h2>
-        <p className="text-sm text-muted-foreground mt-1">
+        <p className="text-sm text-default-500 mt-1">
           {t('security-settings-desc')}
         </p>
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <div className="space-y-2">
-          <Label htmlFor="authPathPrefix" className="flex items-center gap-2 text-sm">
-            <Shield className="h-4 w-4 text-muted-foreground" />
-            {t('auth-path-prefix')}
-          </Label>
-          <Input
-            id="authPathPrefix"
-            placeholder={t('auth-path-prefix-placeholder')}
-            {...register('authPathPrefix')}
-            className={cn(errors.authPathPrefix && 'border-destructive')}
-          />
-          {errors.authPathPrefix && (
-            <p className="text-xs text-destructive">
-              {errors.authPathPrefix.message}
-            </p>
-          )}
-          <p className="text-xs text-muted-foreground">
-            {t('auth-path-prefix-hint')}
-          </p>
-        </div>
+        <Input
+          label={
+            <span className="flex items-center gap-2">
+              <Shield className="h-4 w-4 text-default-500" />
+              {t('auth-path-prefix')}
+            </span>
+          }
+          placeholder={t('auth-path-prefix-placeholder')}
+          variant="bordered"
+          isInvalid={!!errors.authPathPrefix}
+          errorMessage={errors.authPathPrefix?.message}
+          description={t('auth-path-prefix-hint')}
+          {...register('authPathPrefix')}
+        />
 
-        <div className="space-y-2">
-          <Label htmlFor="sessionTimeout" className="flex items-center gap-2 text-sm">
-            <Clock className="h-4 w-4 text-muted-foreground" />
-            {t('session-timeout')}
-          </Label>
-          <Input
-            id="sessionTimeout"
-            type="number"
-            min={5}
-            max={60}
-            {...register('sessionTimeout', { valueAsNumber: true })}
-            className={cn(errors.sessionTimeout && 'border-destructive')}
-          />
-          {errors.sessionTimeout && (
-            <p className="text-xs text-destructive">
-              {errors.sessionTimeout.message}
-            </p>
-          )}
-          <p className="text-xs text-muted-foreground">
-            {t('session-timeout-hint')}
-          </p>
-        </div>
+        <Input
+          label={
+            <span className="flex items-center gap-2">
+              <Clock className="h-4 w-4 text-default-500" />
+              {t('session-timeout')}
+            </span>
+          }
+          type="number"
+          min={5}
+          max={60}
+          variant="bordered"
+          isInvalid={!!errors.sessionTimeout}
+          errorMessage={errors.sessionTimeout?.message}
+          description={t('session-timeout-hint')}
+          {...register('sessionTimeout', { valueAsNumber: true })}
+        />
 
         <div className="flex justify-between pt-4">
-          <Button type="button" variant="ghost" size="sm" onClick={onBack}>
+          <Button type="button" variant="light" size="sm" onPress={onBack}>
             <ArrowLeft className="h-4 w-4 mr-1" />
             {t('back')}
           </Button>
-          <Button type="submit" size="sm">
+          <Button type="submit" color="primary" size="sm">
             {t('next')}
             <ArrowRight className="h-4 w-4 ml-1" />
           </Button>

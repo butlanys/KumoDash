@@ -2,6 +2,7 @@
 
 use axum::extract::State;
 use axum::Json;
+use rust_i18n::t;
 use serde::{Deserialize, Serialize};
 
 use crate::api::AppState;
@@ -44,7 +45,7 @@ pub async fn login(
     let expected_path = configured_prefix.trim_matches('/');
     
     if provided_path != expected_path {
-        return Err(AppError::NotFound("页面不存在".to_string()));
+        return Err(AppError::NotFound(t!("errors.resource.page_not_found").to_string()));
     }
 
     let tokens = AuthService::login(
@@ -80,5 +81,5 @@ pub async fn logout(
 ) -> Result<ApiResponse<()>, AppError> {
     AuthService::logout(&state.pool, &payload.refresh_token, &state.settings.jwt_secret).await?;
 
-    Ok(ApiResponse::message("已成功注销"))
+    Ok(ApiResponse::message(t!("success.auth.logout").to_string()))
 }

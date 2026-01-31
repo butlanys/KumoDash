@@ -1,6 +1,7 @@
 //! Setup handlers
 
 use axum::{extract::State, Json};
+use rust_i18n::t;
 use serde::{Deserialize, Serialize};
 
 use crate::api::AppState;
@@ -76,6 +77,6 @@ pub async fn init(
             refresh_token: token_pair.refresh_token,
             redirect_url: "/login".to_string(),
         },
-        "系统初始化成功",
+        t!("success.setup.completed").to_string(),
     ))
 }

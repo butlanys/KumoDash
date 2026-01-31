@@ -2,9 +2,7 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
 import { User, Lock, Eye, EyeOff, ArrowLeft, ArrowRight, Check, X } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+import { Button, Input, Checkbox } from '@heroui/react'
 import { cn } from '@/lib/utils'
 
 interface SetupAdminProps {
@@ -39,6 +37,7 @@ export const SetupAdmin = ({ initialData, onNext, onBack }: SetupAdminProps) => 
   const [confirmPassword, setConfirmPassword] = useState(initialData.password)
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const [allowWeakPassword, setAllowWeakPassword] = useState(initialData.allowWeakPassword || false)
   const [errors, setErrors] = useState<FieldErrors>({})
   const [touched, setTouched] = useState<Record<string, boolean>>({})
 
@@ -46,7 +45,7 @@ export const SetupAdmin = ({ initialData, onNext, onBack }: SetupAdminProps) => 
 
   const getStrengthInfo = (strength: number) => {
     if (strength <= 2) {
-      return { label: t('password-strength-weak'), color: 'text-destructive', bgColor: 'bg-destructive', width: '33%' }
+      return { label: t('password-strength-weak'), color: 'text-danger', bgColor: 'bg-danger', width: '33%' }
     }
     if (strength === 3) {
       return { label: t('password-strength-medium'), color: 'text-yellow-600', bgColor: 'bg-yellow-500', width: '66%' }
@@ -70,6 +69,11 @@ export const SetupAdmin = ({ initialData, onNext, onBack }: SetupAdminProps) => 
     if (value.length < 8) {
       return t('password-error-length')
     }
+
+    if (allowWeakPassword) {
+      return undefined
+    }
+
     if (!/[A-Z]/.test(value)) {
       return t('password-error-uppercase')
     }
@@ -123,16 +127,18 @@ export const SetupAdmin = ({ initialData, onNext, onBack }: SetupAdminProps) => 
     setTouched({ username: true, password: true, confirmPassword: true })
 
     if (!usernameError && !passwordError && !confirmPasswordError) {
-      onNext({ username, password })
+      onNext({ username, password, allowWeakPassword })
     }
   }
 
-  const passwordRequirements = [
-    { met: password.length >= 8, label: t('password-req-length') },
-    { met: /[A-Z]/.test(password), label: t('password-req-uppercase') },
-    { met: /[a-z]/.test(password), label: t('password-req-lowercase') },
-    { met: /[0-9]/.test(password), label: t('password-req-number') },
-  ]
+  const passwordRequirements = allowWeakPassword 
+    ? [{ met: password.length >= 8, label: t('password-req-length') }]
+    : [
+        { met: password.length >= 8, label: t('password-req-length') },
+        { met: /[A-Z]/.test(password), label: t('password-req-uppercase') },
+        { met: /[a-z]/.test(password), label: t('password-req-lowercase') },
+        { met: /[0-9]/.test(password), label: t('password-req-number') },
+      ]
 
   return (
     <motion.div
@@ -144,65 +150,74 @@ export const SetupAdmin = ({ initialData, onNext, onBack }: SetupAdminProps) => 
     >
       <div className="text-center">
         <h2 className="text-xl font-semibold">{t('create-admin-account')}</h2>
-        <p className="text-sm text-muted-foreground mt-1">
+        <p className="text-sm text-default-500 mt-1">
           {t('create-admin-account-desc')}
         </p>
       </div>
 
       <div className="space-y-4">
         <div className="space-y-2">
-          <Label htmlFor="username" className="text-sm">{t('username')}</Label>
-          <div className="relative">
-            <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              id="username"
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              onBlur={() => handleBlur('username')}
-              placeholder={t('enter-username')}
-              maxLength={50}
-              className={cn(
-                'pl-9',
-                touched.username && errors.username && 'border-destructive'
-              )}
-            />
-          </div>
-          {touched.username && errors.username && (
-            <p className="text-xs text-destructive">{errors.username}</p>
-          )}
-          <p className="text-xs text-muted-foreground">{t('username-hint')}</p>
+          <Input
+            label={t('username')}
+            type="text"
+            value={username}
+            onValueChange={setUsername}
+            onBlur={() => handleBlur('username')}
+            placeholder={t('enter-username')}
+            maxLength={50}
+            isInvalid={touched.username && !!errors.username}
+            errorMessage={touched.username && errors.username}
+            startContent={<User className="h-4 w-4 text-default-500" />}
+          />
+          <p className="text-xs text-default-500">{t('username-hint')}</p>
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="password" className="text-sm">{t('password')}</Label>
-          <div className="relative">
-            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              id="password"
-              type={showPassword ? 'text' : 'password'}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              onBlur={() => handleBlur('password')}
-              placeholder={t('enter-password')}
-              className={cn(
-                'pl-9 pr-9',
-                touched.password && errors.password && 'border-destructive'
-              )}
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+          <Input
+            label={t('password')}
+            type={showPassword ? 'text' : 'password'}
+            value={password}
+            onValueChange={setPassword}
+            onBlur={() => handleBlur('password')}
+            placeholder={t('enter-password')}
+            isInvalid={touched.password && !!errors.password}
+            errorMessage={touched.password && errors.password}
+            startContent={<Lock className="h-4 w-4 text-default-500" />}
+            endContent={
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="text-default-500 hover:text-foreground focus:outline-none"
+              >
+                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              </button>
+            }
+          />
+
+          <div className="flex flex-col gap-1">
+            <Checkbox
+              isSelected={allowWeakPassword}
+              onValueChange={(next) => {
+                setAllowWeakPassword(next)
+                if (touched.password) {
+                  setErrors((prev) => ({ ...prev, password: validatePassword(password) }))
+                }
+              }}
+              size="sm"
             >
-              {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-            </button>
+              {t('allow-weak-password')}
+            </Checkbox>
+            {allowWeakPassword && (
+              <p className="text-xs text-warning px-1">
+                {t('allow-weak-password-warning')}
+              </p>
+            )}
           </div>
 
           {password && (
             <div className="space-y-2">
               <div className="flex items-center gap-2">
-                <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden">
+                <div className="flex-1 h-1.5 bg-default-200 rounded-full overflow-hidden">
                   <motion.div
                     initial={{ width: 0 }}
                     animate={{ width: strengthInfo.width }}
@@ -221,7 +236,7 @@ export const SetupAdmin = ({ initialData, onNext, onBack }: SetupAdminProps) => 
                     key={index}
                     className={cn(
                       'inline-flex items-center gap-1 text-xs',
-                      req.met ? 'text-green-600' : 'text-muted-foreground'
+                      req.met ? 'text-green-600' : 'text-default-500'
                     )}
                   >
                     {req.met ? <Check className="h-3 w-3" /> : <X className="h-3 w-3" />}
@@ -231,39 +246,29 @@ export const SetupAdmin = ({ initialData, onNext, onBack }: SetupAdminProps) => 
               </div>
             </div>
           )}
-
-          {touched.password && errors.password && (
-            <p className="text-xs text-destructive">{errors.password}</p>
-          )}
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="confirmPassword" className="text-sm">{t('confirm-password')}</Label>
-          <div className="relative">
-            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              id="confirmPassword"
-              type={showConfirmPassword ? 'text' : 'password'}
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              onBlur={() => handleBlur('confirmPassword')}
-              placeholder={t('enter-password')}
-              className={cn(
-                'pl-9 pr-9',
-                touched.confirmPassword && errors.confirmPassword && 'border-destructive'
-              )}
-            />
-            <button
-              type="button"
-              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-            >
-              {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-            </button>
-          </div>
-          {touched.confirmPassword && errors.confirmPassword && (
-            <p className="text-xs text-destructive">{errors.confirmPassword}</p>
-          )}
+          <Input
+            label={t('confirm-password')}
+            type={showConfirmPassword ? 'text' : 'password'}
+            value={confirmPassword}
+            onValueChange={setConfirmPassword}
+            onBlur={() => handleBlur('confirmPassword')}
+            placeholder={t('enter-password')}
+            isInvalid={touched.confirmPassword && !!errors.confirmPassword}
+            errorMessage={touched.confirmPassword && errors.confirmPassword}
+            startContent={<Lock className="h-4 w-4 text-default-500" />}
+            endContent={
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className="text-default-500 hover:text-foreground focus:outline-none"
+              >
+                {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              </button>
+            }
+          />
           {confirmPassword && !errors.confirmPassword && password === confirmPassword && (
             <p className="text-xs text-green-600 flex items-center gap-1">
               <Check className="h-3 w-3" />
@@ -274,11 +279,11 @@ export const SetupAdmin = ({ initialData, onNext, onBack }: SetupAdminProps) => 
       </div>
 
       <div className="flex justify-between pt-2">
-        <Button variant="ghost" size="sm" onClick={onBack}>
+        <Button variant="light" size="sm" onPress={onBack}>
           <ArrowLeft className="h-4 w-4 mr-1" />
           {t('back')}
         </Button>
-        <Button size="sm" onClick={handleSubmit}>
+        <Button color="primary" size="sm" onPress={handleSubmit}>
           {t('next')}
           <ArrowRight className="h-4 w-4 ml-1" />
         </Button>

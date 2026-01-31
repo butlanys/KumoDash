@@ -2,12 +2,13 @@
 
 use chrono::{Duration, Utc};
 use rand::Rng;
+use rust_i18n::t;
 use serde::{Deserialize, Serialize};
 use sqlx::SqlitePool;
 
 use crate::models::{AdminCredentials, SecuritySettings};
 use crate::utils::error::AppError;
-use crate::utils::password::{hash_password, validate_password_strength};
+use crate::utils::password::{hash_password, validate_password_strength_with_mode};
 
 /// Setup token information stored in system_settings
 #[derive(Debug, Serialize, Deserialize)]
@@ -112,12 +113,13 @@ impl SetupService {
         }
 
         // Validate password strength
-        validate_password_strength(&admin.password)?;
+        let allow_weak = admin.allow_weak_password.unwrap_or(false);
+        validate_password_strength_with_mode(&admin.password, allow_weak)?;
 
         // Validate username
         if admin.username.len() < 3 || admin.username.len() > 50 {
             return Err(AppError::ValidationError(
-                "用户名长度必须在3-50个字符之间".to_string(),
+                t!("errors.validation.username_length").to_string(),
             ));
         }
 

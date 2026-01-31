@@ -4,6 +4,7 @@ use argon2::{
     password_hash::{rand_core::OsRng, PasswordHash, PasswordHasher, PasswordVerifier, SaltString},
     Argon2,
 };
+use rust_i18n::t;
 
 use super::error::AppError;
 
@@ -31,10 +32,20 @@ pub fn verify_password(password: &str, password_hash: &str) -> Result<bool, AppE
 /// Validate password strength
 /// Requirements: at least 8 characters, contains uppercase, lowercase, and digit
 pub fn validate_password_strength(password: &str) -> Result<(), AppError> {
+    validate_password_strength_with_mode(password, false)
+}
+
+/// Validate password strength with optional weak mode
+/// If allow_weak is true, only checks length >= 8
+pub fn validate_password_strength_with_mode(password: &str, allow_weak: bool) -> Result<(), AppError> {
     if password.len() < 8 {
         return Err(AppError::ValidationError(
-            "密码长度至少为8位".to_string(),
+            t!("errors.validation.password_too_short").to_string(),
         ));
+    }
+
+    if allow_weak {
+        return Ok(());
     }
 
     let has_uppercase = password.chars().any(|c| c.is_uppercase());
@@ -43,7 +54,7 @@ pub fn validate_password_strength(password: &str) -> Result<(), AppError> {
 
     if !has_uppercase || !has_lowercase || !has_digit {
         return Err(AppError::ValidationError(
-            "密码必须包含大小写字母和数字".to_string(),
+            t!("errors.validation.password_weak").to_string(),
         ));
     }
 

@@ -1,4 +1,5 @@
 import axios from 'axios'
+import i18n from '@/i18n'
 
 export const api = axios.create({
   baseURL: '/api/v1',
@@ -8,13 +9,25 @@ export const api = axios.create({
   timeout: 10000,
 })
 
-// Request interceptor for adding token
+/**
+ * Get common headers for API requests including language preference
+ */
+export function getApiHeaders(): Record<string, string> {
+  return {
+    'Content-Type': 'application/json',
+    'Accept-Language': i18n.language || 'zh-CN',
+  }
+}
+
+// Request interceptor for adding token and language
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('access_token')
     if (token) {
       config.headers.Authorization = `Bearer ${token}`
     }
+    // Add Accept-Language header for i18n
+    config.headers['Accept-Language'] = i18n.language || 'zh-CN'
     return config
   },
   (error) => {

@@ -1,6 +1,7 @@
 //! Users handlers
 
 use axum::{extract::State, Extension, Json};
+use rust_i18n::t;
 
 use crate::api::AppState;
 use crate::middleware::auth::AuthUser;
@@ -16,7 +17,7 @@ pub async fn get_me(
 ) -> Result<ApiResponse<AdminResponse>, AppError> {
     let admin = AdminService::get(&state.pool)
         .await?
-        .ok_or_else(|| AppError::NotFound("用户不存在".to_string()))?;
+        .ok_or_else(|| AppError::NotFound(t!("errors.resource.user_not_found").to_string()))?;
 
     Ok(ApiResponse::success(AdminResponse::from(admin)))
 }
@@ -37,5 +38,5 @@ pub async fn change_password(
     // Revoke all refresh tokens after password change
     AuthService::revoke_all_tokens(&state.pool).await?;
 
-    Ok(ApiResponse::message("密码修改成功"))
+    Ok(ApiResponse::message(t!("success.password.changed").to_string()))
 }

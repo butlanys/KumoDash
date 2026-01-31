@@ -75,6 +75,8 @@ const resources = {
       'password-req-uppercase': 'Uppercase',
       'password-req-lowercase': 'Lowercase',
       'password-req-number': 'Number',
+      'allow-weak-password': 'Allow weak password',
+      'allow-weak-password-warning': 'Weak passwords are not recommended for production environments.',
 
       // Setup Complete
       'completing-setup': 'Completing setup...',
@@ -158,6 +160,8 @@ const resources = {
       'password-req-uppercase': '大写字母',
       'password-req-lowercase': '小写字母',
       'password-req-number': '数字',
+      'allow-weak-password': '允许弱密码',
+      'allow-weak-password-warning': '不建议在生产环境中使用弱密码。',
 
       // Setup Complete
       'completing-setup': '正在完成设置...',

@@ -1,6 +1,7 @@
 //! Authentication service
 
 use chrono::Utc;
+use rust_i18n::t;
 use sqlx::SqlitePool;
 
 use crate::config::Settings;
@@ -24,15 +25,15 @@ impl AuthService {
         // Get admin
         let admin = AdminService::get(pool)
             .await?
-            .ok_or_else(|| AppError::AuthError("用户名或密码错误".to_string()))?;
+            .ok_or_else(|| AppError::AuthError(t!("errors.auth.credentials_wrong").to_string()))?;
 
         // Verify credentials
         if admin.username != username {
-            return Err(AppError::AuthError("用户名或密码错误".to_string()));
+            return Err(AppError::AuthError(t!("errors.auth.credentials_wrong").to_string()));
         }
 
         if !verify_password(password, &admin.password_hash)? {
-            return Err(AppError::AuthError("用户名或密码错误".to_string()));
+            return Err(AppError::AuthError(t!("errors.auth.credentials_wrong").to_string()));
         }
 
         // Generate token pair

@@ -3,9 +3,11 @@ import { useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '@/features/auth/hooks/useAuth'
 import { LoginForm } from '@/features/auth/components/LoginForm'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardHeader, CardBody, Spinner } from '@heroui/react'
 import { motion } from 'framer-motion'
-import { Loader2 } from 'lucide-react'
+import { Cloud } from 'lucide-react'
+import { getApiHeaders } from '@/lib/api'
+import { LanguageSwitcher } from '@/components/LanguageSwitcher'
 import NotFoundPage from './NotFoundPage'
 
 export const LoginPage = () => {
@@ -27,7 +29,7 @@ export const LoginPage = () => {
       try {
         const response = await fetch('/api/v1/auth/validate-path', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: getApiHeaders(),
           body: JSON.stringify({ prefix })
         })
         const data = await response.json()
@@ -51,8 +53,8 @@ export const LoginPage = () => {
 
   if (validating) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-secondary-50">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-secondary-50 dark:from-primary-900/20 dark:to-secondary-900/20">
+        <Spinner size="lg" color="primary" />
       </div>
     )
   }
@@ -63,8 +65,8 @@ export const LoginPage = () => {
 
   if (authLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-secondary-50">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-secondary-50 dark:from-primary-900/20 dark:to-secondary-900/20">
+        <Spinner size="lg" color="primary" />
       </div>
     )
   }
@@ -74,21 +76,29 @@ export const LoginPage = () => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-secondary-50 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-secondary-50 dark:from-primary-900/20 dark:to-secondary-900/20 p-4">
+      {/* Language Switcher */}
+      <div className="fixed top-4 right-4">
+        <LanguageSwitcher />
+      </div>
+
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
         className="w-full max-w-md"
       >
-        <Card className="border-none shadow-lg">
-          <CardHeader className="text-center pb-4">
-            <CardTitle className="text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+        <Card className="shadow-xl border border-default-100 dark:border-default-200">
+          <CardHeader className="flex flex-col gap-3 items-center pt-8 pb-6">
+            <div className="p-3 bg-primary/10 rounded-2xl mb-2 ring-1 ring-primary/20">
+              <Cloud className="w-8 h-8 text-primary" />
+            </div>
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
               {t('kumodash')}
-            </CardTitle>
-            <p className="text-muted-foreground">{t('sign-in-to-your-account')}</p>
+            </h1>
+            <p className="text-default-500 text-sm">{t('sign-in-to-your-account')}</p>
           </CardHeader>
-          <CardContent>
+          <CardBody className="px-8 pb-8">
             <motion.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: showLoginForm ? 1 : 0, height: showLoginForm ? 'auto' : 0 }}
@@ -100,10 +110,10 @@ export const LoginPage = () => {
             
             {(!showLoginForm || authLoading) && (
               <div className="flex justify-center py-8">
-                <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+                <Spinner size="lg" color="primary" />
               </div>
             )}
-          </CardContent>
+          </CardBody>
         </Card>
       </motion.div>
     </div>
