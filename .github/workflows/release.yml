@@ -1,0 +1,160 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag (e.g., v0.1.0)'
+        required: true
+        type: string
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    name: Build ${{ matrix.name }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: x86_64-unknown-linux-gnu
+            name: linux-amd64
+            cross: false
+          - target: aarch64-unknown-linux-gnu
+            name: linux-arm64
+            cross: true
+          - target: armv7-unknown-linux-gnueabihf
+            name: linux-armv7
+            cross: true
+          - target: i686-unknown-linux-gnu
+            name: linux-i686
+            cross: true
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Install frontend dependencies
+        run: cd frontend && pnpm install
+
+      - name: Build frontend
+        run: cd frontend && pnpm build
+
+      - name: Setup Rust
+        uses: dtolnay/rust-action@stable
+
+      - name: Install cross
+        if: matrix.cross
+        run: cargo install cross --git https://github.com/cross-rs/cross
+
+      - name: Build with cargo (native)
+        if: ${{ !matrix.cross }}
+        run: |
+          cd backend
+          cargo build --release --target ${{ matrix.target }}
+
+      - name: Build with cross (cross-compile)
+        if: matrix.cross
+        run: |
+          cd backend
+          cross build --release --target ${{ matrix.target }}
+
+      - name: Package binary
+        run: |
+          mkdir -p dist
+          cp backend/target/${{ matrix.target }}/release/kumadash dist/kumadash-${{ matrix.name }}
+          chmod +x dist/kumadash-${{ matrix.name }}
+          cd dist
+          tar -czvf kumadash-${{ matrix.name }}.tar.gz kumadash-${{ matrix.name }}
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: kumadash-${{ matrix.name }}
+          path: dist/kumadash-${{ matrix.name }}.tar.gz
+
+  release:
+    name: Create Release
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Prepare release files
+        run: |
+          mkdir -p release
+          find artifacts -name '*.tar.gz' -exec mv {} release/ \;
+          ls -la release/
+
+      - name: Get tag name
+        id: tag
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "tag=${{ github.event.inputs.tag }}" >> $GITHUB_OUTPUT
+          else
+            echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Generate changelog
+        run: |
+          cat << 'EOF' > CHANGELOG.md
+          ## KumoDash - Lightweight Cloud Server Console
+
+          ### Downloads
+
+          | Platform | Architecture | File |
+          |----------|--------------|------|
+          | Linux | x86_64 (64-bit) | `kumadash-linux-amd64.tar.gz` |
+          | Linux | ARM64 (aarch64) | `kumadash-linux-arm64.tar.gz` |
+          | Linux | ARMv7 (32-bit ARM) | `kumadash-linux-armv7.tar.gz` |
+          | Linux | i686 (32-bit x86) | `kumadash-linux-i686.tar.gz` |
+
+          ### Usage
+
+          ```bash
+          # Extract
+          tar -xzf kumadash-linux-amd64.tar.gz
+
+          # Run
+          ./kumadash-linux-amd64 --data-dir ./data
+
+          # Run in debug mode (HTTP instead of HTTPS)
+          ./kumadash-linux-amd64 --debug --data-dir ./data
+          ```
+          EOF
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.tag.outputs.tag }}
+          name: KumoDash ${{ steps.tag.outputs.tag }}
+          body_path: CHANGELOG.md
+          draft: false
+          prerelease: ${{ contains(steps.tag.outputs.tag, 'alpha') || contains(steps.tag.outputs.tag, 'beta') || contains(steps.tag.outputs.tag, 'rc') }}
+          files: release/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
