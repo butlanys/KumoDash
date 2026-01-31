@@ -6,7 +6,7 @@ use rust_i18n::t;
 use serde::{Deserialize, Serialize};
 
 use crate::api::AppState;
-use crate::models::{LoginRequest, token::{LogoutRequest, RefreshTokenRequest, TokenPairResponse}};
+use crate::models::{LoginRequest, token::{LogoutRequest, RefreshTokenRequest, TokenPairResponse, TokenRefreshResponse}};
 use crate::response::ApiResponse;
 use crate::services::AuthService;
 use crate::utils::error::AppError;
@@ -63,7 +63,7 @@ pub async fn login(
 pub async fn refresh(
     State(state): State<AppState>,
     Json(payload): Json<RefreshTokenRequest>,
-) -> Result<ApiResponse<TokenPairResponse>, AppError> {
+) -> Result<ApiResponse<TokenRefreshResponse>, AppError> {
     let tokens = AuthService::refresh(
         &state.pool,
         &state.settings,

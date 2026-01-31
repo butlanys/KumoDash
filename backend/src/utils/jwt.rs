@@ -57,7 +57,7 @@ pub fn generate_access_token(
         &claims,
         &EncodingKey::from_secret(secret.as_bytes()),
     )
-    .map_err(|e| AppError::InternalError(format!("Token generation failed: {}", e)))
+    .map_err(|e| AppError::InternalError(format!("Token generation failed: {e}")))
 }
 
 /// Generate a refresh token
@@ -85,7 +85,7 @@ pub fn generate_refresh_token(
         &claims,
         &EncodingKey::from_secret(secret.as_bytes()),
     )
-    .map_err(|e| AppError::InternalError(format!("Token generation failed: {}", e)))?;
+    .map_err(|e| AppError::InternalError(format!("Token generation failed: {e}")))?;
 
     Ok((token, jti))
 }

@@ -15,9 +15,26 @@ pub struct RefreshToken {
     pub revoked_at: Option<DateTime<Utc>>,
 }
 
-/// Token pair response
+/// User info in login response
+#[derive(Debug, Serialize)]
+pub struct UserInfo {
+    pub id: i64,
+    pub username: String,
+}
+
+/// Token pair response (for login)
 #[derive(Debug, Serialize)]
 pub struct TokenPairResponse {
+    pub access_token: String,
+    pub refresh_token: String,
+    pub expires_in: i64,
+    pub token_type: String,
+    pub user: UserInfo,
+}
+
+/// Token refresh response (no user info needed)
+#[derive(Debug, Serialize)]
+pub struct TokenRefreshResponse {
     pub access_token: String,
     pub refresh_token: String,
     pub expires_in: i64,

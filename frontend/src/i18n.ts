@@ -11,6 +11,46 @@ const resources = {
       'next': 'Next',
       'retry': 'Retry',
 
+      // Dashboard
+      'dashboard.title': 'Dashboard',
+      'dashboard.systemInfo': 'System Info',
+      'dashboard.hostname': 'Hostname',
+      'dashboard.os': 'Operating System',
+      'dashboard.kernel': 'Kernel Version',
+      'dashboard.uptime': 'Uptime',
+      'dashboard.cpu': 'CPU',
+      'dashboard.cores': 'cores',
+      'dashboard.memory': 'Memory',
+      'dashboard.disk': 'Disk',
+      'dashboard.network': 'Network',
+      'dashboard.diskIo': 'Disk IO',
+      'dashboard.load': 'Load Average',
+      'dashboard.processes': 'Processes',
+      'dashboard.connections': 'TCP Connections',
+      'dashboard.rxSpeed': 'Receive',
+      'dashboard.txSpeed': 'Send',
+      'dashboard.readSpeed': 'Read',
+      'dashboard.writeSpeed': 'Write',
+      'dashboard.mountPoint': 'Mount Point',
+      'dashboard.used': 'Used',
+      'dashboard.free': 'Free',
+      'dashboard.total': 'Total',
+
+      // Sidebar
+      'sidebar.overview': 'Overview',
+      'sidebar.servers': 'Servers',
+      'sidebar.settings': 'Settings',
+      'sidebar.collapse': 'Collapse sidebar',
+      'sidebar.expand': 'Expand sidebar',
+
+      // Header
+      'header.profile': 'Profile',
+      'header.logout': 'Logout',
+      'header.themeLight': 'Light Mode',
+      'header.themeDark': 'Dark Mode',
+      'header.themeSystem': 'System',
+      'header.greeting': 'Hi, {{name}}',
+
       // Login
       'welcome-back': 'Welcome Back',
       'sign-in': 'Sign In',
@@ -95,6 +135,46 @@ const resources = {
       'back': '返回',
       'next': '下一步',
       'retry': '重试',
+
+      // Dashboard
+      'dashboard.title': '仪表盘',
+      'dashboard.systemInfo': '系统信息',
+      'dashboard.hostname': '主机名',
+      'dashboard.os': '操作系统',
+      'dashboard.kernel': '内核版本',
+      'dashboard.uptime': '运行时间',
+      'dashboard.cpu': 'CPU',
+      'dashboard.cores': '核心',
+      'dashboard.memory': '内存',
+      'dashboard.disk': '磁盘',
+      'dashboard.network': '网络',
+      'dashboard.diskIo': '磁盘 IO',
+      'dashboard.load': '系统负载',
+      'dashboard.processes': '进程数',
+      'dashboard.connections': 'TCP 连接',
+      'dashboard.rxSpeed': '接收',
+      'dashboard.txSpeed': '发送',
+      'dashboard.readSpeed': '读取',
+      'dashboard.writeSpeed': '写入',
+      'dashboard.mountPoint': '挂载点',
+      'dashboard.used': '已用',
+      'dashboard.free': '可用',
+      'dashboard.total': '总计',
+
+      // Sidebar
+      'sidebar.overview': '概览',
+      'sidebar.servers': '服务器',
+      'sidebar.settings': '设置',
+      'sidebar.collapse': '收起侧边栏',
+      'sidebar.expand': '展开侧边栏',
+
+      // Header
+      'header.profile': '个人资料',
+      'header.logout': '退出登录',
+      'header.themeLight': '浅色模式',
+      'header.themeDark': '深色模式',
+      'header.themeSystem': '跟随系统',
+      'header.greeting': '你好, {{name}}',
 
       // Login
       'welcome-back': '欢迎回来',

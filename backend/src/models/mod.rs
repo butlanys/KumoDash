@@ -6,4 +6,4 @@ pub mod token;
 
 pub use admin::{Admin, AdminCredentials, AdminResponse, LoginRequest, PasswordChangeRequest, SecuritySettings, SetupRequest};
 pub use audit::{AuditAction, AuditLog};
-pub use token::{LogoutRequest, RefreshToken, RefreshTokenRequest, TokenPairResponse};
+pub use token::{LogoutRequest, RefreshToken, RefreshTokenRequest, TokenPairResponse, TokenRefreshResponse, UserInfo};

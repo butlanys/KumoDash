@@ -12,6 +12,7 @@ pub struct AuditService;
 
 impl AuditService {
     /// Log an audit event
+    #[allow(clippy::too_many_arguments)]
     pub async fn log(
         pool: &SqlitePool,
         user_id: Option<i64>,

@@ -47,6 +47,7 @@ async-trait = "0.1"
 
 # System monitoring
 sysinfo = "0.32"
+procfs = "0.17"
 
 [dev-dependencies]
 tower = { version = "0.5", features = ["util"] }

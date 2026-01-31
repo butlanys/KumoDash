@@ -61,7 +61,7 @@ impl ServerManager {
 
     /// Start HTTP server
     async fn start_http_server(state: AppState, port: u16) -> Result<(), AppError> {
-        let addr = format!("127.0.0.1:{}", port);
+        let addr = format!("127.0.0.1:{port}");
         let listener = TcpListener::bind(&addr)
             .await
             .context("Failed to bind port")

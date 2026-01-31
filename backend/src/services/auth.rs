@@ -5,7 +5,7 @@ use rust_i18n::t;
 use sqlx::SqlitePool;
 
 use crate::config::Settings;
-use crate::models::token::TokenPairResponse;
+use crate::models::token::{TokenPairResponse, TokenRefreshResponse, UserInfo};
 use crate::services::AdminService;
 use crate::utils::error::AppError;
 use crate::utils::jwt::{generate_token_pair, verify_token};
@@ -72,6 +72,10 @@ impl AuthService {
             refresh_token: token_pair.refresh_token,
             expires_in: token_pair.expires_in,
             token_type: token_pair.token_type,
+            user: UserInfo {
+                id: admin.id,
+                username: admin.username,
+            },
         })
     }
 
@@ -80,7 +84,7 @@ impl AuthService {
         pool: &SqlitePool,
         settings: &Settings,
         refresh_token: &str,
-    ) -> Result<TokenPairResponse, AppError> {
+    ) -> Result<TokenRefreshResponse, AppError> {
         // Verify refresh token
         let claims = verify_token(refresh_token, &settings.jwt_secret)?;
 
@@ -152,7 +156,7 @@ impl AuthService {
         .execute(pool)
         .await?;
 
-        Ok(TokenPairResponse {
+        Ok(TokenRefreshResponse {
             access_token: token_pair.access_token,
             refresh_token: token_pair.refresh_token,
             expires_in: token_pair.expires_in,

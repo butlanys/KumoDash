@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '@/features/auth/hooks/useAuth'
 import { LoginForm } from '@/features/auth/components/LoginForm'
@@ -8,15 +8,24 @@ import { motion } from 'framer-motion'
 import { Cloud } from 'lucide-react'
 import { getApiHeaders } from '@/lib/api'
 import { LanguageSwitcher } from '@/components/LanguageSwitcher'
+import { ThemeSwitcher } from '@/components/ThemeSwitcher'
 import NotFoundPage from './NotFoundPage'
 
 export const LoginPage = () => {
   const { t } = useTranslation()
+  const navigate = useNavigate()
   const { prefix } = useParams<{ prefix: string }>()
   const { user, isLoading: authLoading } = useAuth()
   const [showLoginForm, setShowLoginForm] = useState(false)
   const [validating, setValidating] = useState(true)
   const [isValidPath, setIsValidPath] = useState(false)
+
+  // If user is already logged in, redirect to dashboard
+  useEffect(() => {
+    if (!authLoading && user) {
+      navigate('/', { replace: true })
+    }
+  }, [user, authLoading, navigate])
 
   useEffect(() => {
     const validateLoginPath = async () => {
@@ -63,7 +72,7 @@ export const LoginPage = () => {
     return <NotFoundPage />
   }
 
-  if (authLoading) {
+  if (authLoading || user) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-secondary-50 dark:from-primary-900/20 dark:to-secondary-900/20">
         <Spinner size="lg" color="primary" />
@@ -71,14 +80,11 @@ export const LoginPage = () => {
     )
   }
 
-  if (user) {
-    return null
-  }
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-secondary-50 dark:from-primary-900/20 dark:to-secondary-900/20 p-4">
-      {/* Language Switcher */}
-      <div className="fixed top-4 right-4">
+      {/* Language & Theme Switcher */}
+      <div className="fixed top-4 right-4 flex items-center gap-2">
+        <ThemeSwitcher />
         <LanguageSwitcher />
       </div>
 

@@ -60,7 +60,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       
       setUser(userData)
       toast.success('登录成功！')
-      navigate('/dashboard')
+      
+      // Use window.location for a full page navigation to ensure clean routing
+      window.location.href = '/'
       
       return response.data
     } catch (error: any) {
