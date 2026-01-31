@@ -74,7 +74,7 @@ export const SetupComplete = ({ setupData }: SetupCompleteProps) => {
   useEffect(() => {
     if (!success) return
 
-    const loginPath = `${setupData.authPathPrefix}/signin`
+    const loginPath = setupData.authPathPrefix
 
     const timer = setInterval(() => {
       setCountdown((prev) => {

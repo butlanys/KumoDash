@@ -34,6 +34,7 @@ pub fn create_router(state: AppState) -> Router {
 
     // Public auth routes (always accessible)
     let public_routes = Router::new()
+        .route("/api/v1/auth/validate-path", post(crate::handlers::auth::validate_path))
         .route("/api/v1/auth/login", post(crate::handlers::auth::login))
         .route("/api/v1/auth/refresh", post(crate::handlers::auth::refresh))
         .route("/health", get(health_check))

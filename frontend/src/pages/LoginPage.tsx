@@ -1,24 +1,67 @@
 import { useState, useEffect } from 'react'
+import { useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '@/features/auth/hooks/useAuth'
 import { LoginForm } from '@/features/auth/components/LoginForm'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { motion } from 'framer-motion'
 import { Loader2 } from 'lucide-react'
+import NotFoundPage from './NotFoundPage'
 
 export const LoginPage = () => {
   const { t } = useTranslation()
-  const { user, isLoading } = useAuth()
+  const { prefix } = useParams<{ prefix: string }>()
+  const { user, isLoading: authLoading } = useAuth()
   const [showLoginForm, setShowLoginForm] = useState(false)
+  const [validating, setValidating] = useState(true)
+  const [isValidPath, setIsValidPath] = useState(false)
 
   useEffect(() => {
-    if (!isLoading) {
+    const validateLoginPath = async () => {
+      if (!prefix) {
+        setValidating(false)
+        setIsValidPath(false)
+        return
+      }
+
+      try {
+        const response = await fetch('/api/v1/auth/validate-path', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prefix })
+        })
+        const data = await response.json()
+        setIsValidPath(data.success && data.data?.valid === true)
+      } catch {
+        setIsValidPath(false)
+      } finally {
+        setValidating(false)
+      }
+    }
+
+    validateLoginPath()
+  }, [prefix])
+
+  useEffect(() => {
+    if (!authLoading && isValidPath) {
       const timer = setTimeout(() => setShowLoginForm(true), 300)
       return () => clearTimeout(timer)
     }
-  }, [isLoading])
+  }, [authLoading, isValidPath])
 
-  if (isLoading) {
+  if (validating) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-secondary-50">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    )
+  }
+
+  if (!isValidPath) {
+    return <NotFoundPage />
+  }
+
+  if (authLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-secondary-50">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -55,7 +98,7 @@ export const LoginPage = () => {
               <LoginForm />
             </motion.div>
             
-            {(!showLoginForm || isLoading) && (
+            {(!showLoginForm || authLoading) && (
               <div className="flex justify-center py-8">
                 <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
               </div>

@@ -65,8 +65,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return response.data
     } catch (error: any) {
       console.error('Login failed:', error)
-      toast.error(error.response?.data?.message || '无效的凭据')
-      throw error
+      const errorMessage = error.response?.data?.error?.message || error.response?.data?.message || '无效的凭据'
+      toast.error(errorMessage)
+      throw new Error(errorMessage)
     }
   }
 

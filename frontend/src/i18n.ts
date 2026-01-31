@@ -80,7 +80,10 @@ const resources = {
       'completing-setup': 'Completing setup...',
       'setup-failed': 'Setup Failed',
       'setup-complete': 'Setup Complete!',
-      'redirecting-in': 'Redirecting to login in {{seconds}}s...'
+      'redirecting-in': 'Redirecting to login in {{seconds}}s...',
+
+      // Not Found
+      'page-not-found': 'Page Not Found'
     }
   },
   zh: {
@@ -160,7 +163,10 @@ const resources = {
       'completing-setup': '正在完成设置...',
       'setup-failed': '设置失败',
       'setup-complete': '设置完成！',
-      'redirecting-in': '{{seconds}} 秒后跳转到登录页...'
+      'redirecting-in': '{{seconds}} 秒后跳转到登录页...',
+
+      // Not Found
+      'page-not-found': '页面未找到'
     }
   }
 }

@@ -1,12 +1,37 @@
 //! Auth handlers
 
-use axum::{extract::State, Json};
+use axum::extract::State;
+use axum::Json;
+use serde::{Deserialize, Serialize};
 
 use crate::api::AppState;
 use crate::models::{LoginRequest, token::{LogoutRequest, RefreshTokenRequest, TokenPairResponse}};
 use crate::response::ApiResponse;
 use crate::services::AuthService;
 use crate::utils::error::AppError;
+
+#[derive(Deserialize)]
+pub struct ValidatePathRequest {
+    pub prefix: String,
+}
+
+#[derive(Serialize)]
+pub struct ValidatePathResponse {
+    pub valid: bool,
+}
+
+/// Validate login path handler
+pub async fn validate_path(
+    State(state): State<AppState>,
+    Json(payload): Json<ValidatePathRequest>,
+) -> ApiResponse<ValidatePathResponse> {
+    let configured_prefix = &state.settings.security.auth_path_prefix;
+    let provided_path = payload.prefix.trim_matches('/');
+    let expected_path = configured_prefix.trim_matches('/');
+    
+    let valid = provided_path == expected_path;
+    ApiResponse::success(ValidatePathResponse { valid })
+}
 
 /// Login handler
 pub async fn login(

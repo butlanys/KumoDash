@@ -13,16 +13,22 @@ export const LoginForm = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const { login } = useAuth()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
+    setError(null)
     
     try {
       await login({ username, password, authPath: prefix || '' })
-    } catch (error) {
-      console.error('Login failed:', error)
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message)
+      } else {
+        setError(t('login-failed'))
+      }
     } finally {
       setIsLoading(false)
     }
@@ -35,6 +41,12 @@ export const LoginForm = () => {
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-6">
+          {error && (
+            <div className="p-3 text-sm text-destructive bg-destructive/10 rounded-md">
+              {error}
+            </div>
+          )}
+          
           <div className="space-y-2">
             <Label htmlFor="username">{t('username')}</Label>
             <Input
