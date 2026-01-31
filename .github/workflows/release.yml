@@ -75,8 +75,7 @@ jobs:
       - name: Build with cross (cross-compile)
         if: matrix.cross
         run: |
-          cd backend
-          cross build --release --target ${{ matrix.target }}
+          cross build --release --target ${{ matrix.target }} --manifest-path backend/Cargo.toml
 
       - name: Package binary
         run: |
