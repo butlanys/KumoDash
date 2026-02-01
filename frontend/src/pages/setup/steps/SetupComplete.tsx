@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
 import { CheckCircle, XCircle, RefreshCw } from 'lucide-react'
@@ -24,7 +23,6 @@ export const SetupComplete = ({ setupData }: SetupCompleteProps) => {
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
   const [countdown, setCountdown] = useState(3)
-  const navigate = useNavigate()
   const hasCalledRef = useRef(false)
 
   const completeSetup = async () => {

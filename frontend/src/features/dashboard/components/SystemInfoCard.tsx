@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { StatCard } from './StatCard'
-import { Cpu, Server, Activity } from 'lucide-react'
+import { Server, Activity } from 'lucide-react'
 import { Chip } from '@heroui/react'
 
 interface SystemInfoCardProps {

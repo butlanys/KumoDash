@@ -1,48 +1,36 @@
-_version: 2
+_version: 1
 
 # Error messages
-errors:
-  auth:
-    invalid_credentials: "Authentication failed: %{reason}"
-    credentials_wrong: "Invalid username or password"
-    current_password_wrong: "Current password is incorrect"
-    token_expired: "Token has expired"
-    token_invalid: "Invalid token"
-    account_locked: "Account is locked"
-    permission_denied: "Permission denied"
-  
-  validation:
-    generic: "Validation failed: %{reason}"
-    password_too_short: "Password must be at least 8 characters"
-    password_weak: "Password must contain uppercase, lowercase letters and numbers"
-    username_length: "Username must be between 3 and 50 characters"
-    username_format: "Username can only contain letters, numbers, underscores and hyphens"
-  
-  setup:
-    invalid_token: "Setup link is invalid or has expired"
-    already_completed: "System has already been initialized"
-  
-  resource:
-    not_found: "Resource not found: %{resource}"
-    user_not_found: "User not found"
-    admin_not_found: "Administrator not found"
-    page_not_found: "Page not found"
-  
-  rate_limit:
-    exceeded: "Too many requests, please try again later"
-  
-  database:
-    error: "Database error: %{detail}"
-  
-  internal:
-    error: "Internal server error"
+errors.auth.invalid_credentials: "Authentication failed: %{reason}"
+errors.auth.credentials_wrong: "Invalid username or password"
+errors.auth.current_password_wrong: "Current password is incorrect"
+errors.auth.token_expired: "Token has expired"
+errors.auth.token_invalid: "Invalid token"
+errors.auth.account_locked: "Account is locked"
+errors.auth.permission_denied: "Permission denied"
+
+errors.validation.generic: "Validation failed: %{reason}"
+errors.validation.password_too_short: "Password must be at least 8 characters"
+errors.validation.password_weak: "Password must contain uppercase, lowercase letters and numbers"
+errors.validation.username_length: "Username must be between 3 and 50 characters"
+errors.validation.username_format: "Username can only contain letters, numbers, underscores and hyphens"
+
+errors.setup.invalid_token: "Setup link is invalid or has expired"
+errors.setup.already_completed: "System has already been initialized"
+
+errors.resource.not_found: "Resource not found: %{resource}"
+errors.resource.user_not_found: "User not found"
+errors.resource.admin_not_found: "Administrator not found"
+errors.resource.page_not_found: "Page not found"
+
+errors.rate_limit.exceeded: "Too many requests, please try again later"
+
+errors.database.error: "Database error: %{detail}"
+
+errors.internal.error: "Internal server error"
 
 # Success messages
-success:
-  setup:
-    completed: "System initialized successfully"
-  auth:
-    login: "Login successful"
-    logout: "Logged out successfully"
-  password:
-    changed: "Password changed successfully"
+success.setup.completed: "System initialized successfully"
+success.auth.login: "Login successful"
+success.auth.logout: "Logged out successfully"
+success.password.changed: "Password changed successfully"

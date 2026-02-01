@@ -9,8 +9,9 @@ interface SetupAdminProps {
   initialData: {
     username: string
     password: string
+    allowWeakPassword?: boolean
   }
-  onNext: (data: { username: string; password: string }) => void
+  onNext: (data: { username: string; password: string; allowWeakPassword: boolean }) => void
   onBack: () => void
 }
 
