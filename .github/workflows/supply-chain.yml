@@ -8,6 +8,7 @@ on:
       - 'backend/Cargo.lock'
       - 'frontend/package.json'
       - 'frontend/pnpm-lock.yaml'
+      - '.github/workflows/supply-chain.yml'
   pull_request:
     branches: [main]
   schedule:
