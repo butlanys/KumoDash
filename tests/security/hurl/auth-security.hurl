@@ -132,13 +132,27 @@ HTTP 401
 # 5. Logout Endpoint Protection
 # ============================================
 
-# Test: Logout without auth
+# Test: Logout without auth returns 401
 POST {{base_url}}/api/v1/auth/logout
 Content-Type: application/json
 {
   "refresh_token": "fake-token"
 }
 HTTP 401
+[Asserts]
+jsonpath "$.success" == false
+jsonpath "$.error.code" == "AUTH_TOKEN_INVALID"
+
+# Test: Logout with invalid Authorization header
+POST {{base_url}}/api/v1/auth/logout
+Content-Type: application/json
+Authorization: Bearer invalid-token
+{
+  "refresh_token": "fake-token"
+}
+HTTP 401
+[Asserts]
+jsonpath "$.success" == false
 
 # ============================================
 # 6. Validate Path Tests

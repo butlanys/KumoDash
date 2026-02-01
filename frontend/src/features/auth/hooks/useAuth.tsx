@@ -77,22 +77,34 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const refreshToken = localStorage.getItem('refresh_token')
       if (refreshToken) {
-        await api.post('/auth/logout', {
+        const response = await api.post('/auth/logout', {
           refresh_token: refreshToken
         })
+        
+        // Clear all auth data
+        setUser(null)
+        localStorage.removeItem('user')
+        localStorage.removeItem('access_token')
+        localStorage.removeItem('refresh_token')
+        
+        toast.success('退出成功！')
+        
+        // Use login_path from response for redirect
+        const loginPath = response.data?.data?.login_path || '/login'
+        navigate(loginPath)
+        return
       }
     } catch (error) {
       console.error('Logout failed:', error)
-    } finally {
-      // Clear all auth data
-      setUser(null)
-      localStorage.removeItem('user')
-      localStorage.removeItem('access_token')
-      localStorage.removeItem('refresh_token')
-      
-      toast.success('退出成功！')
-      navigate('/login')
     }
+    
+    // Fallback: clear data and redirect to /login
+    setUser(null)
+    localStorage.removeItem('user')
+    localStorage.removeItem('access_token')
+    localStorage.removeItem('refresh_token')
+    toast.success('退出成功！')
+    navigate('/login')
   }
 
   return (

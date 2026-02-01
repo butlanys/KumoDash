@@ -52,3 +52,9 @@ pub struct RefreshTokenRequest {
 pub struct LogoutRequest {
     pub refresh_token: String,
 }
+
+/// Logout response
+#[derive(Debug, Serialize)]
+pub struct LogoutResponse {
+    pub login_path: String,
+}

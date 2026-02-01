@@ -6,7 +6,7 @@ use rust_i18n::t;
 use serde::{Deserialize, Serialize};
 
 use crate::api::AppState;
-use crate::models::{LoginRequest, token::{LogoutRequest, RefreshTokenRequest, TokenPairResponse, TokenRefreshResponse}};
+use crate::models::{LoginRequest, token::{LogoutRequest, LogoutResponse, RefreshTokenRequest, TokenPairResponse, TokenRefreshResponse}};
 use crate::response::ApiResponse;
 use crate::services::AuthService;
 use crate::utils::error::AppError;
@@ -90,8 +90,14 @@ pub async fn refresh(
 pub async fn logout(
     State(state): State<AppState>,
     Json(payload): Json<LogoutRequest>,
-) -> Result<ApiResponse<()>, AppError> {
+) -> Result<ApiResponse<LogoutResponse>, AppError> {
     AuthService::logout(&state.pool, &payload.refresh_token, &state.settings.jwt_secret).await?;
 
-    Ok(ApiResponse::message(t!("success.auth.logout").to_string()))
+    // Get dynamic login path for redirect
+    let login_path = get_auth_path_prefix(&state.pool).await;
+
+    Ok(ApiResponse::success_with_message(
+        LogoutResponse { login_path },
+        t!("success.auth.logout").to_string(),
+    ))
 }
