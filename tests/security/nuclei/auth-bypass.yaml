@@ -1,0 +1,26 @@
+id: kumodash-auth-bypass
+
+info:
+  name: KumoDash Auth Bypass
+  author: KumoDash Security Team
+  severity: critical
+  description: Test for authentication bypass on protected endpoints
+  tags: auth,bypass,kumodash
+
+http:
+  - raw:
+      - |
+        GET /api/v1/users/me HTTP/1.1
+        Host: {{Hostname}}
+
+    matchers-condition: and
+    matchers:
+      - type: status
+        status:
+          - 401
+
+      - type: word
+        words:
+          - "success"
+          - "false"
+        condition: and

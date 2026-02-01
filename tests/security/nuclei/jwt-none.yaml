@@ -1,0 +1,28 @@
+id: kumodash-jwt-none
+
+info:
+  name: KumoDash JWT None Algorithm Attack
+  author: KumoDash Security Team
+  severity: critical
+  description: Test for JWT none algorithm vulnerability
+  tags: jwt,auth,kumodash
+
+http:
+  - raw:
+      - |
+        GET /api/v1/users/me HTTP/1.1
+        Host: {{Hostname}}
+        Authorization: Bearer eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6ImFkbWluIn0.
+
+    matchers-condition: and
+    matchers:
+      - type: status
+        status:
+          - 401
+
+      - type: word
+        words:
+          - "access_token"
+          - "username"
+        negative: true
+        condition: or

@@ -1,0 +1,27 @@
+id: kumodash-path-traversal
+
+info:
+  name: KumoDash Path Traversal
+  author: KumoDash Security Team
+  severity: high
+  description: Test for path traversal vulnerabilities
+  tags: lfi,traversal,kumodash
+
+http:
+  - raw:
+      - |
+        GET /assets/../../../etc/passwd HTTP/1.1
+        Host: {{Hostname}}
+
+    matchers-condition: and
+    matchers:
+      - type: word
+        words:
+          - "root:"
+        negative: true
+
+      - type: status
+        status:
+          - 404
+          - 400
+          - 200

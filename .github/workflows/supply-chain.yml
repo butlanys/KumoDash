@@ -1,0 +1,156 @@
+name: Supply Chain Security
+
+on:
+  push:
+    branches: [main, dev]
+    paths:
+      - 'backend/Cargo.toml'
+      - 'backend/Cargo.lock'
+      - 'frontend/package.json'
+      - 'frontend/pnpm-lock.yaml'
+  pull_request:
+    branches: [main]
+  schedule:
+    # 每天 UTC 时间 2:00 运行
+    - cron: '0 2 * * *'
+
+jobs:
+  rust-security:
+    name: Rust Dependency Audit
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-action@stable
+
+      - name: Cache cargo registry
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            ~/.cargo/advisory-db
+          key: ${{ runner.os }}-cargo-audit-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Install cargo-audit
+        run: cargo install cargo-audit --locked
+
+      - name: Install cargo-deny
+        run: cargo install cargo-deny --locked
+
+      - name: Run cargo-audit
+        run: cargo audit --deny warnings
+
+      - name: Run cargo-deny
+        run: cargo deny check
+
+      - name: Check Cargo.lock exists
+        run: |
+          if [ ! -f Cargo.lock ]; then
+            echo "::error::Cargo.lock is missing! This is a supply chain risk."
+            exit 1
+          fi
+
+  frontend-security:
+    name: Node.js Dependency Audit
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+          cache-dependency-path: frontend/pnpm-lock.yaml
+
+      - name: Check pnpm-lock.yaml exists
+        run: |
+          if [ ! -f pnpm-lock.yaml ]; then
+            echo "::error::pnpm-lock.yaml is missing! This is a supply chain risk."
+            exit 1
+          fi
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run pnpm audit
+        run: pnpm audit --audit-level=high
+        continue-on-error: true
+
+  sbom:
+    name: Generate SBOM
+    runs-on: ubuntu-latest
+    needs: [rust-security, frontend-security]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-action@stable
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Generate Rust dependency tree
+        run: |
+          cd backend
+          cargo tree --prefix none > ../sbom-rust-deps.txt
+
+      - name: Generate Node.js dependency list
+        run: |
+          cd frontend
+          pnpm install --frozen-lockfile
+          pnpm list --depth=10 > ../sbom-node-deps.txt
+
+      - name: Upload SBOM artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom-${{ github.sha }}
+          path: |
+            sbom-rust-deps.txt
+            sbom-node-deps.txt
+          retention-days: 90
+
+  lockfile-check:
+    name: Lockfile Integrity
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Check for lockfile changes without source changes
+        run: |
+          # 检查 lockfile 是否在没有对应源文件变更的情况下被修改
+          CARGO_LOCK_CHANGED=$(git diff --name-only HEAD~1 | grep -c "Cargo.lock" || true)
+          CARGO_TOML_CHANGED=$(git diff --name-only HEAD~1 | grep -c "Cargo.toml" || true)
+          
+          if [ "$CARGO_LOCK_CHANGED" -gt 0 ] && [ "$CARGO_TOML_CHANGED" -eq 0 ]; then
+            echo "::warning::Cargo.lock changed without Cargo.toml changes - verify this is intentional"
+          fi
+          
+          PNPM_LOCK_CHANGED=$(git diff --name-only HEAD~1 | grep -c "pnpm-lock.yaml" || true)
+          PKG_JSON_CHANGED=$(git diff --name-only HEAD~1 | grep -c "package.json" || true)
+          
+          if [ "$PNPM_LOCK_CHANGED" -gt 0 ] && [ "$PKG_JSON_CHANGED" -eq 0 ]; then
+            echo "::warning::pnpm-lock.yaml changed without package.json changes - verify this is intentional"
+          fi

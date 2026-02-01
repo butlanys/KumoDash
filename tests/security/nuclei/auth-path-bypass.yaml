@@ -1,0 +1,30 @@
+id: kumodash-auth-path-bypass
+
+info:
+  name: KumoDash Auth Path Bypass
+  author: KumoDash Security Team
+  severity: high
+  description: Test that invalid auth_path returns 404, not authentication bypass
+  tags: auth,bypass,kumodash
+
+http:
+  - raw:
+      - |
+        POST /api/v1/auth/login HTTP/1.1
+        Host: {{Hostname}}
+        Content-Type: application/json
+
+        {"username": "admin", "password": "test", "auth_path": "invalid-secret-path"}
+
+    matchers-condition: and
+    matchers:
+      - type: status
+        status:
+          - 404
+
+      - type: word
+        words:
+          - "RESOURCE_NOT_FOUND"
+          - "success"
+          - "false"
+        condition: and

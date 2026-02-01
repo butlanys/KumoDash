@@ -1,0 +1,31 @@
+id: kumodash-sqli-login
+
+info:
+  name: KumoDash Login SQL Injection
+  author: KumoDash Security Team
+  severity: critical
+  description: Test for SQL injection in login endpoint - verifies SQLi is properly rejected
+  tags: sqli,auth,kumodash
+
+http:
+  - raw:
+      - |
+        POST /api/v1/auth/login HTTP/1.1
+        Host: {{Hostname}}
+        Content-Type: application/json
+
+        {"username": "admin' OR '1'='1", "password": "test", "auth_path": "login"}
+
+    matchers-condition: and
+    matchers:
+      - type: word
+        words:
+          - "access_token"
+        negative: true
+
+      - type: status
+        status:
+          - 401
+          - 422
+          - 400
+          - 404
