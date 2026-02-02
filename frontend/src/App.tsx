@@ -5,6 +5,7 @@ import SetupPage from './pages/setup/SetupPage'
 import LoginPage from './pages/LoginPage'
 import NotFoundPage from './pages/NotFoundPage'
 import DashboardPage from './pages/DashboardPage'
+import SettingsPage from './pages/SettingsPage'
 import { AuthProvider } from './features/auth/hooks/useAuth'
 import { AuthGuard } from './components/shared/AuthGuard'
 import { AppLayout } from './layouts/AppLayout'
@@ -34,8 +35,7 @@ function AppRoutes() {
           {/* Protected Routes */}
           <Route path="/" element={<AuthGuard><AppLayout /></AuthGuard>}>
             <Route index element={<DashboardPage />} />
-            <Route path="servers" element={<div>Servers (TODO)</div>} />
-            <Route path="settings" element={<div>Settings (TODO)</div>} />
+            <Route path="settings" element={<SettingsPage />} />
           </Route>
           
           {/* 404 */}

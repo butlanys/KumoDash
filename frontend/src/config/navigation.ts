@@ -1,6 +1,5 @@
 import { 
   LayoutDashboard, 
-  Server, 
   Settings,
   type LucideIcon 
 } from 'lucide-react'
@@ -18,11 +17,6 @@ export const navItems: NavItem[] = [
     key: 'sidebar.overview',
     path: '/',
     icon: LayoutDashboard,
-  },
-  {
-    key: 'sidebar.servers',
-    path: '/servers',
-    icon: Server,
   },
   {
     key: 'sidebar.settings',

@@ -1,14 +1,10 @@
 import { NavLink } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
-import {
-  LayoutDashboard,
-  ChevronLeft,
-  ChevronRight,
-  Cloud
-} from 'lucide-react'
+import { ChevronLeft, ChevronRight, Cloud } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@heroui/react'
+import { navItems } from '@/config/navigation'
 
 interface SidebarProps {
   isOpen: boolean
@@ -18,13 +14,6 @@ interface SidebarProps {
 
 export function Sidebar({ isOpen, onToggle, isMobile }: SidebarProps) {
   const { t } = useTranslation()
-
-  const links = [
-    { to: '/', icon: LayoutDashboard, label: t('sidebar.overview') },
-    // Future routes
-    // { to: '/servers', icon: Server, label: t('sidebar.servers') },
-    // { to: '/settings', icon: Settings, label: t('sidebar.settings') },
-  ]
 
   const sidebarVariants = {
     expanded: { width: 240 },
@@ -56,10 +45,10 @@ export function Sidebar({ isOpen, onToggle, isMobile }: SidebarProps) {
       </div>
 
       <nav className="mt-4 flex flex-col gap-2 px-2">
-        {links.map((link) => (
+        {navItems.map((item) => (
           <NavLink
-            key={link.to}
-            to={link.to}
+            key={item.path}
+            to={item.path}
             className={({ isActive }) =>
               cn(
                 "flex h-10 items-center gap-3 rounded-lg px-3 text-sm transition-colors",
@@ -69,12 +58,12 @@ export function Sidebar({ isOpen, onToggle, isMobile }: SidebarProps) {
               )
             }
           >
-            <link.icon size={20} className="min-w-[20px]" />
+            <item.icon size={20} className="min-w-[20px]" />
             <motion.span
               animate={{ opacity: isOpen ? 1 : 0, display: isOpen ? "block" : "none" }}
               className="whitespace-nowrap"
             >
-              {link.label}
+              {t(item.key)}
             </motion.span>
           </NavLink>
         ))}

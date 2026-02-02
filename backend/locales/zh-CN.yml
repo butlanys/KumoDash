@@ -29,8 +29,15 @@ errors.database.error: "数据库错误: %{detail}"
 
 errors.internal.error: "内部服务器错误"
 
+# 设置错误
+errors.settings.invalid_auth_path: "认证路径必须以 / 开头"
+errors.settings.invalid_session_timeout: "会话超时时间必须在 1-1440 分钟之间"
+errors.settings.invalid_port: "端口号必须在 1-65535 之间"
+
 # 成功消息
 success.setup.completed: "系统初始化成功"
 success.auth.login: "登录成功"
 success.auth.logout: "已成功注销"
 success.password.changed: "密码修改成功"
+success.settings.updated: "设置已更新"
+success.settings.updated_restart_required: "设置已更新，部分更改需要重启服务后生效"

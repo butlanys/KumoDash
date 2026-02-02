@@ -29,8 +29,15 @@ errors.database.error: "Database error: %{detail}"
 
 errors.internal.error: "Internal server error"
 
+# Settings errors
+errors.settings.invalid_auth_path: "Auth path must start with /"
+errors.settings.invalid_session_timeout: "Session timeout must be between 1-1440 minutes"
+errors.settings.invalid_port: "Port must be between 1-65535"
+
 # Success messages
 success.setup.completed: "System initialized successfully"
 success.auth.login: "Login successful"
 success.auth.logout: "Logged out successfully"
 success.password.changed: "Password changed successfully"
+success.settings.updated: "Settings updated"
+success.settings.updated_restart_required: "Settings updated, some changes require service restart"

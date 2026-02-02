@@ -47,6 +47,8 @@ pub fn create_router(state: AppState) -> Router {
         .route("/api/v1/users/me", get(crate::handlers::users::get_me))
         .route("/api/v1/users/me/password", put(crate::handlers::users::change_password))
         .route("/api/v1/system/status", get(crate::handlers::system::get_status))
+        .route("/api/v1/settings", get(crate::handlers::settings::get_settings))
+        .route("/api/v1/settings", put(crate::handlers::settings::update_settings))
         .layer(middleware::from_fn_with_state(state.clone(), auth_middleware));
 
     // Static file routes for embedded frontend

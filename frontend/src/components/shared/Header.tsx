@@ -11,7 +11,7 @@ import {
   NavbarContent,
   NavbarItem
 } from '@heroui/react'
-import { Menu, Sun, Moon, Laptop, LogOut, User as UserIcon } from 'lucide-react'
+import { Menu, Sun, Moon, Laptop, LogOut } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
 interface HeaderProps {
@@ -117,9 +117,6 @@ export function Header({ onMenuClick, isMobile }: HeaderProps) {
             />
           </DropdownTrigger>
           <DropdownMenu aria-label="User Actions" variant="flat">
-            <DropdownItem key="profile" startContent={<UserIcon size={16} />}>
-              {t('header.profile')}
-            </DropdownItem>
             <DropdownItem key="logout" color="danger" startContent={<LogOut size={16} />} onPress={logout}>
               {t('header.logout')}
             </DropdownItem>

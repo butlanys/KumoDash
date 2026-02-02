@@ -125,7 +125,60 @@ const resources = {
       'redirecting-in': 'Redirecting to login in {{seconds}}s...',
 
       // Not Found
-      'page-not-found': 'Page Not Found'
+      'page-not-found': 'Page Not Found',
+
+      // Settings
+      'settings.title': 'Settings',
+      'settings.save': 'Save',
+      'settings.saveSuccess': 'Settings saved successfully',
+      'settings.saveError': 'Failed to save settings',
+      'settings.tabs.security': 'Security',
+      'settings.tabs.server': 'Server',
+      'settings.tabs.appearance': 'Appearance',
+      'settings.tabs.about': 'About',
+
+      // Settings - Security
+      'settings.security.title': 'Security Settings',
+      'settings.security.description': 'Configure login path and session settings',
+      'settings.security.loginPath': 'Login Path Prefix',
+      'settings.security.loginPathHint': 'Custom path to hide login page from scanners',
+      'settings.security.pathMinError': 'Login path must be at least 3 characters',
+      'settings.security.pathStartError': 'Login path must start with /',
+      'settings.security.sessionTimeout': 'Session Timeout (minutes)',
+      'settings.security.sessionTimeoutHint': 'How long users stay logged in (5-60 minutes)',
+      'settings.security.timeoutMinError': 'Session timeout must be at least 5 minutes',
+      'settings.security.timeoutMaxError': 'Session timeout must be at most 60 minutes',
+
+      // Settings - Server
+      'settings.server.title': 'Server Settings',
+      'settings.server.description': 'View server configuration (read-only)',
+      'settings.server.restartRequired': 'Changes to these settings require a server restart',
+      'settings.server.httpsPort': 'HTTPS Port',
+      'settings.server.httpsPortHint': 'Server listening port (requires restart)',
+      'settings.server.debugMode': 'Debug Mode',
+      'settings.server.debugModeHint': 'Enable verbose logging for troubleshooting',
+      'settings.server.enabled': 'Enabled',
+      'settings.server.disabled': 'Disabled',
+
+      // Settings - Appearance
+      'settings.appearance.theme': 'Theme',
+      'settings.appearance.themeDescription': 'Select your preferred color scheme',
+      'settings.appearance.light': 'Light',
+      'settings.appearance.dark': 'Dark',
+      'settings.appearance.system': 'System',
+      'settings.appearance.language': 'Language',
+      'settings.appearance.languageDescription': 'Select your preferred language',
+
+      // Settings - About
+      'settings.about.title': 'About KumoDash',
+      'settings.about.description': 'System information and credits',
+      'settings.about.tagline': 'Lightweight Cloud Server Console',
+      'settings.about.version': 'Version',
+      'settings.about.os': 'Operating System',
+      'settings.about.kernel': 'Kernel Version',
+      'settings.about.license': 'License',
+      'settings.about.licenseText': 'KumoDash is open source software licensed under the Apache 2.0 License.',
+      'settings.about.madeWith': 'Made with'
     }
   },
   zh: {
@@ -250,7 +303,60 @@ const resources = {
       'redirecting-in': '{{seconds}} 秒后跳转到登录页...',
 
       // Not Found
-      'page-not-found': '页面未找到'
+      'page-not-found': '页面未找到',
+
+      // Settings
+      'settings.title': '设置',
+      'settings.save': '保存',
+      'settings.saveSuccess': '设置保存成功',
+      'settings.saveError': '保存设置失败',
+      'settings.tabs.security': '安全',
+      'settings.tabs.server': '服务',
+      'settings.tabs.appearance': '外观',
+      'settings.tabs.about': '关于',
+
+      // Settings - Security
+      'settings.security.title': '安全设置',
+      'settings.security.description': '配置登录路径和会话设置',
+      'settings.security.loginPath': '登录路径前缀',
+      'settings.security.loginPathHint': '自定义路径以隐藏登录页面',
+      'settings.security.pathMinError': '登录路径至少需要 3 个字符',
+      'settings.security.pathStartError': '登录路径必须以 / 开头',
+      'settings.security.sessionTimeout': '会话超时（分钟）',
+      'settings.security.sessionTimeoutHint': '用户保持登录状态的时间（5-60 分钟）',
+      'settings.security.timeoutMinError': '会话超时至少为 5 分钟',
+      'settings.security.timeoutMaxError': '会话超时最多为 60 分钟',
+
+      // Settings - Server
+      'settings.server.title': '服务设置',
+      'settings.server.description': '查看服务配置（只读）',
+      'settings.server.restartRequired': '更改这些设置需要重启服务',
+      'settings.server.httpsPort': 'HTTPS 端口',
+      'settings.server.httpsPortHint': '服务监听端口（需要重启）',
+      'settings.server.debugMode': '调试模式',
+      'settings.server.debugModeHint': '启用详细日志以便排查问题',
+      'settings.server.enabled': '已启用',
+      'settings.server.disabled': '已禁用',
+
+      // Settings - Appearance
+      'settings.appearance.theme': '主题',
+      'settings.appearance.themeDescription': '选择您喜欢的颜色方案',
+      'settings.appearance.light': '浅色',
+      'settings.appearance.dark': '深色',
+      'settings.appearance.system': '跟随系统',
+      'settings.appearance.language': '语言',
+      'settings.appearance.languageDescription': '选择您喜欢的语言',
+
+      // Settings - About
+      'settings.about.title': '关于 KumoDash',
+      'settings.about.description': '系统信息和致谢',
+      'settings.about.tagline': '轻量级云服务器控制台',
+      'settings.about.version': '版本',
+      'settings.about.os': '操作系统',
+      'settings.about.kernel': '内核版本',
+      'settings.about.license': '许可证',
+      'settings.about.licenseText': 'KumoDash 是基于 Apache 2.0 许可证的开源软件。',
+      'settings.about.madeWith': '用心制作'
     }
   }
 }
