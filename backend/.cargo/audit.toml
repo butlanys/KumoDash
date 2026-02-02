@@ -1,0 +1,6 @@
+[advisories]
+# RUSTSEC-2023-0071: rsa crate vulnerability in sqlx-mysql
+# This is a false positive - we only use SQLite, not MySQL.
+# sqlx-mysql appears in Cargo.lock but is NOT compiled or used.
+# See: https://github.com/launchbadge/sqlx/issues/3168
+ignore = ["RUSTSEC-2023-0071"]
