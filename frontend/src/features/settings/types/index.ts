@@ -11,3 +11,8 @@ export interface UpdateSettingsRequest {
   https_port?: number
   debug_mode?: boolean
 }
+
+export interface UpdateSettingsResponse {
+  settings: SystemSettings
+  requires_restart: boolean
+}

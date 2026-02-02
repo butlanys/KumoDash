@@ -245,3 +245,42 @@ fn get_tcp_connections_count() -> usize {
 
     count
 }
+
+/// Restart the panel (KumoDash service)
+pub async fn restart_panel(
+    State(_state): State<AppState>,
+    Extension(_auth_user): Extension<AuthUser>,
+) -> Result<ApiResponse<()>, AppError> {
+    // Spawn a task to restart after response is sent
+    tokio::spawn(async {
+        tokio::time::sleep(tokio::time::Duration::from_millis(500)).await;
+        std::process::exit(0);
+    });
+
+    Ok(ApiResponse::success_with_message(
+        (),
+        rust_i18n::t!("success.system.restart_panel").to_string(),
+    ))
+}
+
+/// Restart the server (reboot the system)
+pub async fn restart_server(
+    State(_state): State<AppState>,
+    Extension(_auth_user): Extension<AuthUser>,
+) -> Result<ApiResponse<()>, AppError> {
+    // Execute system reboot command
+    let output = std::process::Command::new("systemctl")
+        .args(["reboot"])
+        .output();
+
+    match output {
+        Ok(_) => Ok(ApiResponse::success_with_message(
+            (),
+            rust_i18n::t!("success.system.restart_server").to_string(),
+        )),
+        Err(e) => Err(AppError::InternalError(format!(
+            "Failed to restart server: {}",
+            e
+        ))),
+    }
+}

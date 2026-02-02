@@ -1,0 +1,81 @@
+id: kumodash-terminal-injection
+
+info:
+  name: KumoDash Terminal Injection Protection
+  author: KumoDash Security Team
+  severity: high
+  description: Test for SQL injection and command injection in terminal endpoints
+  tags: sqli,injection,terminal,kumodash
+
+http:
+  # Test: SQL Injection in session ID
+  - raw:
+      - |
+        DELETE /api/v1/terminal/sessions/' OR '1'='1 HTTP/1.1
+        Host: {{Hostname}}
+        Authorization: Bearer fake-token
+
+    matchers-condition: and
+    matchers:
+      - type: status
+        status:
+          - 401
+
+      - type: word
+        words:
+          - "success"
+          - "false"
+        condition: and
+
+      - type: word
+        part: body
+        words:
+          - "sqlite"
+          - "syntax error"
+          - "SQL"
+        negative: true
+        condition: or
+
+  # Test: UNION injection in reconnect
+  - raw:
+      - |
+        POST /api/v1/terminal/sessions/' UNION SELECT 1,2,3--/reconnect HTTP/1.1
+        Host: {{Hostname}}
+        Authorization: Bearer fake-token
+
+    matchers-condition: and
+    matchers:
+      - type: status
+        status:
+          - 401
+          - 404
+
+      - type: word
+        part: body
+        words:
+          - "sqlite"
+          - "UNION"
+        negative: true
+        condition: or
+
+  # Test: Path traversal in scrollback
+  - raw:
+      - |
+        GET /api/v1/terminal/sessions/../../etc/passwd/scrollback HTTP/1.1
+        Host: {{Hostname}}
+        Authorization: Bearer fake-token
+
+    matchers-condition: and
+    matchers:
+      - type: status
+        status:
+          - 401
+          - 404
+
+      - type: word
+        part: body
+        words:
+          - "root:"
+          - "/bin/bash"
+        negative: true
+        condition: or

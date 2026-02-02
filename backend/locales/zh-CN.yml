@@ -52,3 +52,7 @@ errors.terminal.ws_token_expired: "WebSocket 连接令牌已过期"
 # 终端成功消息
 success.terminal.session_created: "终端会话已创建"
 success.terminal.session_terminated: "终端会话已终止"
+
+# 系统成功消息
+success.system.restart_panel: "面板正在重启..."
+success.system.restart_server: "服务器正在重启..."

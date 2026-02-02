@@ -55,6 +55,14 @@ const resources = {
       'header.themeDark': 'Dark Mode',
       'header.themeSystem': 'System',
       'header.greeting': 'Hi, {{name}}',
+      'header.restartPanel': 'Restart Panel',
+      'header.restartServer': 'Restart Server',
+      'header.confirmRestartPanel': 'Are you sure you want to restart the panel? You will need to log in again.',
+      'header.confirmRestartServer': 'Are you sure you want to restart the server? This will affect all services.',
+      'header.restartPanelSuccess': 'Panel is restarting...',
+      'header.restartPanelError': 'Failed to restart panel',
+      'header.restartServerSuccess': 'Server is restarting...',
+      'header.restartServerError': 'Failed to restart server',
 
       // Login
       'welcome-back': 'Welcome Back',
@@ -156,14 +164,17 @@ const resources = {
 
       // Settings - Server
       'settings.server.title': 'Server Settings',
-      'settings.server.description': 'View server configuration (read-only)',
+      'settings.server.description': 'Configure server settings',
       'settings.server.restartRequired': 'Changes to these settings require a server restart',
       'settings.server.httpsPort': 'HTTPS Port',
       'settings.server.httpsPortHint': 'Server listening port (requires restart)',
+      'settings.server.portMinError': 'Port must be at least 1024',
+      'settings.server.portMaxError': 'Port must be at most 65535',
       'settings.server.debugMode': 'Debug Mode',
       'settings.server.debugModeHint': 'Enable verbose logging for troubleshooting',
       'settings.server.enabled': 'Enabled',
       'settings.server.disabled': 'Disabled',
+      'settings.server.savedRestartRequired': 'Settings saved. Restart required for changes to take effect.',
 
       // Settings - Appearance
       'settings.appearance.theme': 'Theme',
@@ -273,6 +284,14 @@ const resources = {
       'header.themeDark': '深色模式',
       'header.themeSystem': '跟随系统',
       'header.greeting': '你好, {{name}}',
+      'header.restartPanel': '重启面板',
+      'header.restartServer': '重启服务器',
+      'header.confirmRestartPanel': '确定要重启面板吗？您需要重新登录。',
+      'header.confirmRestartServer': '确定要重启服务器吗？这将影响所有服务。',
+      'header.restartPanelSuccess': '面板正在重启...',
+      'header.restartPanelError': '重启面板失败',
+      'header.restartServerSuccess': '服务器正在重启...',
+      'header.restartServerError': '重启服务器失败',
 
       // Login
       'welcome-back': '欢迎回来',
@@ -374,14 +393,17 @@ const resources = {
 
       // Settings - Server
       'settings.server.title': '服务设置',
-      'settings.server.description': '查看服务配置（只读）',
+      'settings.server.description': '配置服务设置',
       'settings.server.restartRequired': '更改这些设置需要重启服务',
       'settings.server.httpsPort': 'HTTPS 端口',
       'settings.server.httpsPortHint': '服务监听端口（需要重启）',
+      'settings.server.portMinError': '端口号必须大于 1023',
+      'settings.server.portMaxError': '端口号必须小于 65536',
       'settings.server.debugMode': '调试模式',
       'settings.server.debugModeHint': '启用详细日志以便排查问题',
       'settings.server.enabled': '已启用',
       'settings.server.disabled': '已禁用',
+      'settings.server.savedRestartRequired': '设置已保存，需重启服务生效。',
 
       // Settings - Appearance
       'settings.appearance.theme': '主题',

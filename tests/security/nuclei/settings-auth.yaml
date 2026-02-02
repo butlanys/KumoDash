@@ -1,0 +1,80 @@
+id: kumodash-settings-auth
+
+info:
+  name: KumoDash Settings Auth Bypass
+  author: KumoDash Security Team
+  severity: critical
+  description: Test for authentication bypass on settings endpoints
+  tags: auth,bypass,settings,kumodash
+
+http:
+  - raw:
+      - |
+        GET /api/v1/settings HTTP/1.1
+        Host: {{Hostname}}
+
+    matchers-condition: and
+    matchers:
+      - type: status
+        status:
+          - 401
+
+      - type: word
+        words:
+          - "success"
+          - "false"
+        condition: and
+
+  - raw:
+      - |
+        PUT /api/v1/settings HTTP/1.1
+        Host: {{Hostname}}
+        Content-Type: application/json
+
+        {"https_port": 9000}
+
+    matchers-condition: and
+    matchers:
+      - type: status
+        status:
+          - 401
+
+      - type: word
+        words:
+          - "success"
+          - "false"
+        condition: and
+
+  - raw:
+      - |
+        POST /api/v1/system/restart-panel HTTP/1.1
+        Host: {{Hostname}}
+
+    matchers-condition: and
+    matchers:
+      - type: status
+        status:
+          - 401
+
+      - type: word
+        words:
+          - "success"
+          - "false"
+        condition: and
+
+  - raw:
+      - |
+        POST /api/v1/system/restart-server HTTP/1.1
+        Host: {{Hostname}}
+
+    matchers-condition: and
+    matchers:
+      - type: status
+        status:
+          - 401
+
+      - type: word
+        words:
+          - "success"
+          - "false"
+        condition: and

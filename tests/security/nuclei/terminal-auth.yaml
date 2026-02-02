@@ -1,0 +1,70 @@
+id: kumodash-terminal-auth
+
+info:
+  name: KumoDash Terminal Auth Protection
+  author: KumoDash Security Team
+  severity: critical
+  description: Test for authentication requirement on terminal endpoints
+  tags: auth,terminal,kumodash
+
+http:
+  # Test: Create session without auth
+  - raw:
+      - |
+        POST /api/v1/terminal/sessions HTTP/1.1
+        Host: {{Hostname}}
+        Content-Type: application/json
+        
+        {}
+
+    matchers-condition: and
+    matchers:
+      - type: status
+        status:
+          - 401
+
+      - type: word
+        words:
+          - "success"
+          - "false"
+        condition: and
+
+  # Test: List sessions without auth
+  - raw:
+      - |
+        GET /api/v1/terminal/sessions HTTP/1.1
+        Host: {{Hostname}}
+
+    matchers-condition: and
+    matchers:
+      - type: status
+        status:
+          - 401
+
+      - type: word
+        words:
+          - "AUTH_TOKEN_INVALID"
+
+  # Test: Terminate session without auth
+  - raw:
+      - |
+        DELETE /api/v1/terminal/sessions/fake-id HTTP/1.1
+        Host: {{Hostname}}
+
+    matchers-condition: and
+    matchers:
+      - type: status
+        status:
+          - 401
+
+  # Test: WebSocket endpoint without auth
+  - raw:
+      - |
+        GET /api/v1/terminal/ws/fake-id HTTP/1.1
+        Host: {{Hostname}}
+
+    matchers-condition: and
+    matchers:
+      - type: status
+        status:
+          - 401

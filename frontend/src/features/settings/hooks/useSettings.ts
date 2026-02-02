@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { settingsService } from '@/services/settingsService'
-import type { UpdateSettingsRequest } from '../types'
+import type { UpdateSettingsRequest, UpdateSettingsResponse } from '../types'
 
 export function useSettings() {
   return useQuery({
@@ -14,8 +14,21 @@ export function useUpdateSettings() {
 
   return useMutation({
     mutationFn: (data: UpdateSettingsRequest) => settingsService.updateSettings(data),
-    onSuccess: () => {
+    onSuccess: (response: UpdateSettingsResponse) => {
       queryClient.invalidateQueries({ queryKey: ['settings'] })
+      return response
     },
+  })
+}
+
+export function useRestartPanel() {
+  return useMutation({
+    mutationFn: () => settingsService.restartPanel(),
+  })
+}
+
+export function useRestartServer() {
+  return useMutation({
+    mutationFn: () => settingsService.restartServer(),
   })
 }

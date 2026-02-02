@@ -1,5 +1,5 @@
 import api from '@/lib/api'
-import type { SystemSettings, UpdateSettingsRequest } from '@/features/settings/types'
+import type { SystemSettings, UpdateSettingsRequest, UpdateSettingsResponse } from '@/features/settings/types'
 
 export const settingsService = {
   getSettings: async (): Promise<SystemSettings> => {
@@ -7,7 +7,16 @@ export const settingsService = {
     return response.data.data
   },
 
-  updateSettings: async (data: UpdateSettingsRequest): Promise<void> => {
-    await api.put('/settings', data)
+  updateSettings: async (data: UpdateSettingsRequest): Promise<UpdateSettingsResponse> => {
+    const response = await api.put('/settings', data)
+    return response.data.data
+  },
+
+  restartPanel: async (): Promise<void> => {
+    await api.post('/system/restart-panel')
+  },
+
+  restartServer: async (): Promise<void> => {
+    await api.post('/system/restart-server')
   },
 }

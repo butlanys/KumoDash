@@ -52,3 +52,7 @@ errors.terminal.ws_token_expired: "WebSocket connection token has expired"
 # Terminal success messages
 success.terminal.session_created: "Terminal session created"
 success.terminal.session_terminated: "Terminal session terminated"
+
+# System success messages
+success.system.restart_panel: "Panel is restarting..."
+success.system.restart_server: "Server is restarting..."
