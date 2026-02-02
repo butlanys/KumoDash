@@ -9,6 +9,7 @@ extern crate rust_i18n;
 i18n!("locales", fallback = "zh-CN");
 
 pub mod api;
+pub mod cli;
 pub mod config;
 pub mod db;
 pub mod handlers;
