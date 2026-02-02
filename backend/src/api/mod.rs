@@ -3,11 +3,12 @@
 pub mod auth;
 pub mod setup;
 pub mod system;
+pub mod terminal;
 pub mod users;
 
 use axum::{
     middleware,
-    routing::{get, post, put},
+    routing::{delete, get, post, put},
     Router,
 };
 use sqlx::SqlitePool;
@@ -51,6 +52,20 @@ pub fn create_router(state: AppState) -> Router {
         .route("/api/v1/settings", put(crate::handlers::settings::update_settings))
         .layer(middleware::from_fn_with_state(state.clone(), auth_middleware));
 
+    // Terminal routes (protected)
+    let terminal_routes = Router::new()
+        .route("/api/v1/terminal/sessions", post(crate::handlers::terminal::create_session))
+        .route("/api/v1/terminal/sessions", get(crate::handlers::terminal::list_sessions))
+        .route("/api/v1/terminal/sessions", delete(crate::handlers::terminal::terminate_all_sessions))
+        .route("/api/v1/terminal/sessions/{id}/reconnect", post(crate::handlers::terminal::reconnect_session))
+        .route("/api/v1/terminal/sessions/{id}/scrollback", get(crate::handlers::terminal::get_scrollback))
+        .route("/api/v1/terminal/sessions/{id}", delete(crate::handlers::terminal::terminate_session))
+        .layer(middleware::from_fn_with_state(state.clone(), auth_middleware));
+
+    // WebSocket route (token verified in handler)
+    let ws_routes = Router::new()
+        .route("/api/v1/terminal/ws/{id}", get(crate::handlers::terminal_ws::ws_upgrade));
+
     // Static file routes for embedded frontend
     let static_routes = Router::new()
         .route("/", get(serve_index))
@@ -62,6 +77,8 @@ pub fn create_router(state: AppState) -> Router {
         .merge(setup_routes)
         .merge(public_routes)
         .merge(protected_routes)
+        .merge(terminal_routes)
+        .merge(ws_routes)
         .merge(static_routes)
         .layer(
             CorsLayer::new()

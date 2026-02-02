@@ -6,6 +6,7 @@ import LoginPage from './pages/LoginPage'
 import NotFoundPage from './pages/NotFoundPage'
 import DashboardPage from './pages/DashboardPage'
 import SettingsPage from './pages/SettingsPage'
+import TerminalPage from './pages/TerminalPage'
 import { AuthProvider } from './features/auth/hooks/useAuth'
 import { AuthGuard } from './components/shared/AuthGuard'
 import { AppLayout } from './layouts/AppLayout'
@@ -36,6 +37,7 @@ function AppRoutes() {
           <Route path="/" element={<AuthGuard><AppLayout /></AuthGuard>}>
             <Route index element={<DashboardPage />} />
             <Route path="settings" element={<SettingsPage />} />
+            <Route path="terminal" element={<TerminalPage />} />
           </Route>
           
           {/* 404 */}

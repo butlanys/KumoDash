@@ -5,7 +5,7 @@ edition = "2021"
 
 [dependencies]
 # Web framework
-axum = "0.8"
+axum = { version = "0.8", features = ["ws"] }
 tokio = { version = "1", features = ["full"] }
 tower = "0.5"
 tower-http = { version = "0.6", features = ["cors", "trace", "fs", "set-header"] }
@@ -51,6 +51,12 @@ async-trait = "0.1"
 # System monitoring
 sysinfo = "0.32"
 procfs = "0.17"
+
+# Terminal (WebSocket PTY)
+tokio-tungstenite = "0.21"
+futures-util = "0.3"
+dashmap = "5"
+portable-pty = "0.8"
 
 [dev-dependencies]
 tower = { version = "0.5", features = ["util"] }

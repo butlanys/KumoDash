@@ -13,7 +13,7 @@ use kumadash::{
     config::{CliArgs, Settings},
     db,
     server,
-    services::SetupService,
+    services::{SetupService, TerminalService},
     SETUP_ROUTES_ENABLED,
 };
 
@@ -77,6 +77,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
         tracing::info!("Starting KumoDash Backend v0.1.0");
         tracing::info!("Data directory: {}", args.data_dir.display());
+        tracing::info!("Terminal feature uses portable-pty (no external dependencies)");
 
         // Check debug mode from CLI args and save to database
         if args.is_debug_mode() {
@@ -96,6 +97,17 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         // Disable setup routes since setup is completed
         SETUP_ROUTES_ENABLED.store(false, std::sync::atomic::Ordering::SeqCst);
         tracing::info!("System initialized, setup routes disabled");
+
+        // Cleanup stale terminal sessions from previous run
+        match TerminalService::cleanup_stale_sessions(&pool).await {
+            Ok(count) if count > 0 => {
+                tracing::info!("Cleaned up {} stale terminal sessions", count);
+            }
+            Ok(_) => {}
+            Err(e) => {
+                tracing::warn!("Failed to cleanup stale terminal sessions: {}", e);
+            }
+        }
 
         // Create app state
         let state = AppState {

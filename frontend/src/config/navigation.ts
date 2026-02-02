@@ -1,6 +1,7 @@
 import { 
   LayoutDashboard, 
   Settings,
+  Terminal,
   type LucideIcon 
 } from 'lucide-react'
 
@@ -17,6 +18,11 @@ export const navItems: NavItem[] = [
     key: 'sidebar.overview',
     path: '/',
     icon: LayoutDashboard,
+  },
+  {
+    key: 'sidebar.terminal',
+    path: '/terminal',
+    icon: Terminal,
   },
   {
     key: 'sidebar.settings',

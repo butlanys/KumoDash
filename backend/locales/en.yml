@@ -41,3 +41,14 @@ success.auth.logout: "Logged out successfully"
 success.password.changed: "Password changed successfully"
 success.settings.updated: "Settings updated"
 success.settings.updated_restart_required: "Settings updated, some changes require service restart"
+
+# Terminal errors
+errors.terminal.session_not_found: "Terminal session not found"
+errors.terminal.session_limit: "Maximum terminal session limit reached"
+errors.terminal.tmux_error: "Terminal service error: %{detail}"
+errors.terminal.ws_token_invalid: "Invalid WebSocket connection token"
+errors.terminal.ws_token_expired: "WebSocket connection token has expired"
+
+# Terminal success messages
+success.terminal.session_created: "Terminal session created"
+success.terminal.session_terminated: "Terminal session terminated"

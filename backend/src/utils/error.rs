@@ -46,6 +46,21 @@ pub enum AppError {
 
     #[error("INTERNAL_ERROR")]
     InternalError(String),
+
+    #[error("TERMINAL_SESSION_NOT_FOUND")]
+    TerminalSessionNotFound,
+
+    #[error("TERMINAL_SESSION_LIMIT")]
+    TerminalSessionLimit,
+
+    #[error("TERMINAL_TMUX_ERROR")]
+    TerminalTmuxError(String),
+
+    #[error("TERMINAL_WS_TOKEN_INVALID")]
+    TerminalWsTokenInvalid,
+
+    #[error("TERMINAL_WS_TOKEN_EXPIRED")]
+    TerminalWsTokenExpired,
 }
 
 /// Error response detail
@@ -78,6 +93,11 @@ impl AppError {
             AppError::SetupAlreadyCompleted => "SETUP_ALREADY_COMPLETED",
             AppError::DatabaseError(_) => "DATABASE_ERROR",
             AppError::InternalError(_) => "INTERNAL_ERROR",
+            AppError::TerminalSessionNotFound => "TERMINAL_SESSION_NOT_FOUND",
+            AppError::TerminalSessionLimit => "TERMINAL_SESSION_LIMIT",
+            AppError::TerminalTmuxError(_) => "TERMINAL_TMUX_ERROR",
+            AppError::TerminalWsTokenInvalid => "TERMINAL_WS_TOKEN_INVALID",
+            AppError::TerminalWsTokenExpired => "TERMINAL_WS_TOKEN_EXPIRED",
         }
     }
 
@@ -96,6 +116,11 @@ impl AppError {
             AppError::SetupAlreadyCompleted => StatusCode::BAD_REQUEST,
             AppError::DatabaseError(_) => StatusCode::INTERNAL_SERVER_ERROR,
             AppError::InternalError(_) => StatusCode::INTERNAL_SERVER_ERROR,
+            AppError::TerminalSessionNotFound => StatusCode::NOT_FOUND,
+            AppError::TerminalSessionLimit => StatusCode::TOO_MANY_REQUESTS,
+            AppError::TerminalTmuxError(_) => StatusCode::INTERNAL_SERVER_ERROR,
+            AppError::TerminalWsTokenInvalid => StatusCode::UNAUTHORIZED,
+            AppError::TerminalWsTokenExpired => StatusCode::UNAUTHORIZED,
         }
     }
 
@@ -114,6 +139,11 @@ impl AppError {
             AppError::SetupAlreadyCompleted => t!("errors.setup.already_completed").to_string(),
             AppError::DatabaseError(e) => t!("errors.database.error", detail = e.to_string()).to_string(),
             AppError::InternalError(_) => t!("errors.internal.error").to_string(),
+            AppError::TerminalSessionNotFound => t!("errors.terminal.session_not_found").to_string(),
+            AppError::TerminalSessionLimit => t!("errors.terminal.session_limit").to_string(),
+            AppError::TerminalTmuxError(detail) => t!("errors.terminal.tmux_error", detail = detail).to_string(),
+            AppError::TerminalWsTokenInvalid => t!("errors.terminal.ws_token_invalid").to_string(),
+            AppError::TerminalWsTokenExpired => t!("errors.terminal.ws_token_expired").to_string(),
         }
     }
 }

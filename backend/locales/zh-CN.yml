@@ -41,3 +41,14 @@ success.auth.logout: "已成功注销"
 success.password.changed: "密码修改成功"
 success.settings.updated: "设置已更新"
 success.settings.updated_restart_required: "设置已更新，部分更改需要重启服务后生效"
+
+# 终端错误
+errors.terminal.session_not_found: "终端会话不存在"
+errors.terminal.session_limit: "已达到最大终端会话数限制"
+errors.terminal.tmux_error: "终端服务错误: %{detail}"
+errors.terminal.ws_token_invalid: "WebSocket 连接令牌无效"
+errors.terminal.ws_token_expired: "WebSocket 连接令牌已过期"
+
+# 终端成功消息
+success.terminal.session_created: "终端会话已创建"
+success.terminal.session_terminated: "终端会话已终止"

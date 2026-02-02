@@ -61,6 +61,45 @@ CREATE TABLE IF NOT EXISTS system_settings (
     https_port INTEGER DEFAULT 8443,
     debug_mode BOOLEAN DEFAULT false
 );
+
+-- Terminal sessions table
+CREATE TABLE IF NOT EXISTS terminal_sessions (
+    id TEXT PRIMARY KEY,
+    user_id INTEGER NOT NULL,
+    name TEXT NOT NULL,
+    tmux_session TEXT NOT NULL UNIQUE,
+    shell TEXT DEFAULT '/bin/bash',
+    cwd TEXT,
+    cols INTEGER DEFAULT 80,
+    rows INTEGER DEFAULT 24,
+    status TEXT DEFAULT 'running',
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    last_activity_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    ended_at TIMESTAMP,
+    end_reason TEXT,
+    FOREIGN KEY (user_id) REFERENCES admin(id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_terminal_sessions_user_id ON terminal_sessions(user_id);
+CREATE INDEX IF NOT EXISTS idx_terminal_sessions_status ON terminal_sessions(status);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_terminal_sessions_name ON terminal_sessions(name);
+
+-- Terminal audit events table
+CREATE TABLE IF NOT EXISTS terminal_audit_events (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    session_id TEXT NOT NULL,
+    user_id INTEGER NOT NULL,
+    event_type TEXT NOT NULL,
+    client_ip TEXT,
+    user_agent TEXT,
+    meta TEXT,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (session_id) REFERENCES terminal_sessions(id),
+    FOREIGN KEY (user_id) REFERENCES admin(id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_terminal_audit_session_id ON terminal_audit_events(session_id);
+CREATE INDEX IF NOT EXISTS idx_terminal_audit_created_at ON terminal_audit_events(created_at);
 "#;
 
 /// Initialize the SQLite database connection pool
