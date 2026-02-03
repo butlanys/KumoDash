@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { Tabs, Tab } from '@heroui/react'
-import { Shield, Server, Palette, Info } from 'lucide-react'
+import { ShieldCheckIcon, ServerIcon, SwatchIcon, InformationCircleIcon } from '@heroicons/react/24/outline'
 import { SecuritySettings } from '@/features/settings/components/SecuritySettings'
 import { ServerSettings } from '@/features/settings/components/ServerSettings'
 import { AppearanceSettings } from '@/features/settings/components/AppearanceSettings'
@@ -28,7 +28,7 @@ export default function SettingsPage() {
           key="security"
           title={
             <div className="flex items-center gap-2">
-              <Shield className="h-4 w-4" />
+              <ShieldCheckIcon className="h-4 w-4" />
               <span>{t('settings.tabs.security')}</span>
             </div>
           }
@@ -42,7 +42,7 @@ export default function SettingsPage() {
           key="server"
           title={
             <div className="flex items-center gap-2">
-              <Server className="h-4 w-4" />
+              <ServerIcon className="h-4 w-4" />
               <span>{t('settings.tabs.server')}</span>
             </div>
           }
@@ -56,7 +56,7 @@ export default function SettingsPage() {
           key="appearance"
           title={
             <div className="flex items-center gap-2">
-              <Palette className="h-4 w-4" />
+              <SwatchIcon className="h-4 w-4" />
               <span>{t('settings.tabs.appearance')}</span>
             </div>
           }
@@ -70,7 +70,7 @@ export default function SettingsPage() {
           key="about"
           title={
             <div className="flex items-center gap-2">
-              <Info className="h-4 w-4" />
+              <InformationCircleIcon className="h-4 w-4" />
               <span>{t('settings.tabs.about')}</span>
             </div>
           }

@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { StatCard } from './StatCard'
-import { HardDrive } from 'lucide-react'
+import { CircleStackIcon } from '@heroicons/react/24/outline'
 import { Progress } from '@heroui/react'
 
 interface MemoryCardProps {
@@ -28,7 +28,7 @@ export function MemoryCard({ data }: MemoryCardProps) {
   }
 
   return (
-    <StatCard title={t('dashboard.memory')} icon={<HardDrive size={18} />}>
+    <StatCard title={t('dashboard.memory')} icon={<CircleStackIcon className="w-[18px] h-[18px]" />}>
       <div className="flex flex-col gap-4 py-2">
         <div className="flex justify-between items-end">
           <span className="text-3xl font-bold">{data.usage_percent.toFixed(1)}%</span>

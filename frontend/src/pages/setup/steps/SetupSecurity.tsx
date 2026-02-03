@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { motion } from 'framer-motion'
-import { Shield, Clock, ArrowLeft, ArrowRight } from 'lucide-react'
+import { ShieldCheckIcon, ClockIcon, ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/24/outline'
 import { Button, Input } from '@heroui/react'
 
 interface SetupSecurityProps {
@@ -63,7 +63,7 @@ export const SetupSecurity = ({ initialData, onNext, onBack }: SetupSecurityProp
         <Input
           label={
             <span className="flex items-center gap-2">
-              <Shield className="h-4 w-4 text-default-500" />
+              <ShieldCheckIcon className="h-4 w-4 text-default-500" />
               {t('auth-path-prefix')}
             </span>
           }
@@ -78,7 +78,7 @@ export const SetupSecurity = ({ initialData, onNext, onBack }: SetupSecurityProp
         <Input
           label={
             <span className="flex items-center gap-2">
-              <Clock className="h-4 w-4 text-default-500" />
+              <ClockIcon className="h-4 w-4 text-default-500" />
               {t('session-timeout')}
             </span>
           }
@@ -94,12 +94,12 @@ export const SetupSecurity = ({ initialData, onNext, onBack }: SetupSecurityProp
 
         <div className="flex justify-between pt-4">
           <Button type="button" variant="light" size="sm" onPress={onBack}>
-            <ArrowLeft className="h-4 w-4 mr-1" />
+            <ArrowLeftIcon className="h-4 w-4 mr-1" />
             {t('back')}
           </Button>
           <Button type="submit" color="primary" size="sm">
             {t('next')}
-            <ArrowRight className="h-4 w-4 ml-1" />
+            <ArrowRightIcon className="h-4 w-4 ml-1" />
           </Button>
         </div>
       </form>

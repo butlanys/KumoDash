@@ -5,7 +5,7 @@ import { useAuth } from '@/features/auth/hooks/useAuth'
 import { LoginForm } from '@/features/auth/components/LoginForm'
 import { Card, CardHeader, CardBody, Spinner } from '@heroui/react'
 import { motion } from 'framer-motion'
-import { Cloud } from 'lucide-react'
+import { CloudIcon } from '@heroicons/react/24/outline'
 import { getApiHeaders } from '@/lib/api'
 import { LanguageSwitcher } from '@/components/LanguageSwitcher'
 import { ThemeSwitcher } from '@/components/ThemeSwitcher'
@@ -97,7 +97,7 @@ export const LoginPage = () => {
         <Card className="shadow-xl border border-default-100 dark:border-default-200">
           <CardHeader className="flex flex-col gap-3 items-center pt-8 pb-6">
             <div className="p-3 bg-primary/10 rounded-2xl mb-2 ring-1 ring-primary/20">
-              <Cloud className="w-8 h-8 text-primary" />
+              <CloudIcon className="w-8 h-8 text-primary" />
             </div>
             <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
               {t('kumodash')}

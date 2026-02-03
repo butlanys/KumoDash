@@ -56,3 +56,25 @@ success.terminal.session_terminated: "Terminal session terminated"
 # System success messages
 success.system.restart_panel: "Panel is restarting..."
 success.system.restart_server: "Server is restarting..."
+
+# File management errors
+errors.files.path_must_be_absolute: "Path must be absolute"
+errors.files.path_not_found: "Path not found"
+errors.files.parent_not_found: "Parent directory not found"
+errors.files.invalid_path: "Invalid path"
+errors.files.not_a_directory: "Not a directory"
+errors.files.is_directory: "Is a directory, not a file"
+errors.files.file_not_found: "File not found"
+errors.files.access_denied: "Access denied to path: %{path}"
+errors.files.read_error: "Failed to read file: %{detail}"
+errors.files.write_error: "Failed to write file: %{detail}"
+errors.files.too_large: "File too large (%{size} bytes), maximum allowed is %{max} bytes"
+errors.files.exists: "File already exists: %{path}"
+
+# File management success messages
+success.files.written: "File saved"
+success.files.directory_created: "Directory created"
+success.files.renamed: "Renamed successfully"
+success.files.copied: "Copied successfully"
+success.files.deleted: "Deleted successfully"
+success.files.uploaded: "Uploaded successfully"

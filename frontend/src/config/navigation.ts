@@ -1,14 +1,17 @@
 import { 
-  LayoutDashboard, 
-  Settings,
-  Terminal,
-  type LucideIcon 
-} from 'lucide-react'
+  HomeIcon,
+  Cog6ToothIcon,
+  CommandLineIcon,
+  FolderOpenIcon,
+} from '@heroicons/react/24/outline'
+import type { ForwardRefExoticComponent, RefAttributes, SVGProps } from 'react'
+
+type HeroIcon = ForwardRefExoticComponent<Omit<SVGProps<SVGSVGElement>, "ref"> & { title?: string; titleId?: string } & RefAttributes<SVGSVGElement>>
 
 export interface NavItem {
   key: string           // i18n key
   path: string          // Route path
-  icon: LucideIcon      // Lucide Icon
+  icon: HeroIcon        // Heroicon
   badge?: number        // Optional badge number
   children?: NavItem[]  // Optional sub-menu (reserved)
 }
@@ -17,16 +20,21 @@ export const navItems: NavItem[] = [
   {
     key: 'sidebar.overview',
     path: '/',
-    icon: LayoutDashboard,
+    icon: HomeIcon,
+  },
+  {
+    key: 'sidebar.files',
+    path: '/files',
+    icon: FolderOpenIcon,
   },
   {
     key: 'sidebar.terminal',
     path: '/terminal',
-    icon: Terminal,
+    icon: CommandLineIcon,
   },
   {
     key: 'sidebar.settings',
     path: '/settings',
-    icon: Settings,
+    icon: Cog6ToothIcon,
   },
 ]

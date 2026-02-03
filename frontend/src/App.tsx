@@ -7,6 +7,8 @@ import NotFoundPage from './pages/NotFoundPage'
 import DashboardPage from './pages/DashboardPage'
 import SettingsPage from './pages/SettingsPage'
 import TerminalPage from './pages/TerminalPage'
+import FilesPage from './pages/FilesPage'
+
 import { AuthProvider } from './features/auth/hooks/useAuth'
 import { AuthGuard } from './components/shared/AuthGuard'
 import { AppLayout } from './layouts/AppLayout'
@@ -36,6 +38,7 @@ function AppRoutes() {
           {/* Protected Routes */}
           <Route path="/" element={<AuthGuard><AppLayout /></AuthGuard>}>
             <Route index element={<DashboardPage />} />
+            <Route path="files" element={<FilesPage />} />
             <Route path="settings" element={<SettingsPage />} />
             <Route path="terminal" element={<TerminalPage />} />
           </Route>

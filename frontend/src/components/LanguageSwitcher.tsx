@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { Button } from '@heroui/react'
-import { Languages } from 'lucide-react'
+import { LanguageIcon } from '@heroicons/react/24/outline'
 
 const LANGUAGES = [
   { code: 'zh', label: '简体中文' },
@@ -24,7 +24,7 @@ export const LanguageSwitcher = () => {
       variant="light"
       size="sm"
       onPress={toggleLanguage}
-      startContent={<Languages className="h-4 w-4" />}
+      startContent={<LanguageIcon className="h-4 w-4" />}
       className="text-default-500 hover:text-foreground"
     >
       {nextLang?.label}

@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Button, ButtonGroup, Card, CardBody, Spinner, Chip, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Input, useDisclosure } from '@heroui/react'
-import { Plus, Terminal as TerminalIcon, RefreshCw, Trash2, MoreVertical, Wifi, WifiOff, Loader, Unplug, ChevronDown, Trash } from 'lucide-react'
+import { PlusIcon, CommandLineIcon, ArrowPathIcon, TrashIcon, EllipsisVerticalIcon, WifiIcon, XMarkIcon, XCircleIcon, ChevronDownIcon } from '@heroicons/react/24/outline'
 import { TerminalView } from '@/features/terminal/components/TerminalView'
 import { useTerminalSession } from '@/features/terminal/hooks/useTerminalSession'
 import { WsConnectionStatus } from '@/features/terminal/types'
@@ -18,11 +18,11 @@ const STATUS_COLORS: Record<WsConnectionStatus, 'success' | 'warning' | 'danger'
 }
 
 const STATUS_ICONS: Record<WsConnectionStatus, React.ReactNode> = {
-  connected: <Wifi className="w-3 h-3" />,
-  connecting: <Loader className="w-3 h-3 animate-spin" />,
-  reconnecting: <RefreshCw className="w-3 h-3 animate-spin" />,
-  disconnected: <WifiOff className="w-3 h-3" />,
-  error: <WifiOff className="w-3 h-3" />,
+  connected: <WifiIcon className="w-3 h-3" />,
+  connecting: <ArrowPathIcon className="w-3 h-3 animate-spin" />,
+  reconnecting: <ArrowPathIcon className="w-3 h-3 animate-spin" />,
+  disconnected: <XMarkIcon className="w-3 h-3" />,
+  error: <XMarkIcon className="w-3 h-3" />,
 }
 
 export default function TerminalPage() {
@@ -166,7 +166,7 @@ export default function TerminalPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <TerminalIcon className="w-6 h-6" />
+                    <CommandLineIcon className="w-6 h-6" />
           <h1 className="text-2xl font-bold">{t('terminal.title')}</h1>
         </div>
         
@@ -188,7 +188,7 @@ export default function TerminalPage() {
             <ButtonGroup size="sm" variant="flat">
               <Button
                 color="warning"
-                startContent={<Unplug className="w-4 h-4" />}
+                startContent={<XCircleIcon className="w-4 h-4" />}
                 onPress={handleDisconnect}
               >
                 {t('terminal.disconnect')}
@@ -196,7 +196,7 @@ export default function TerminalPage() {
               <Dropdown placement="bottom-end">
                 <DropdownTrigger>
                   <Button isIconOnly color="warning">
-                    <ChevronDown className="w-4 h-4" />
+                                        <ChevronDownIcon className="w-4 h-4" />
                   </Button>
                 </DropdownTrigger>
                 <DropdownMenu aria-label="Disconnect options">
@@ -204,7 +204,7 @@ export default function TerminalPage() {
                     key="disconnect-destroy"
                     color="danger"
                     className="text-danger"
-                    startContent={<Trash2 className="w-4 h-4" />}
+                    startContent={<TrashIcon className="w-4 h-4" />}
                     onPress={handleDisconnectAndDestroy}
                   >
                     {t('terminal.disconnect_and_destroy')}
@@ -220,7 +220,7 @@ export default function TerminalPage() {
               <DropdownTrigger>
                 <Button variant="flat" size="sm">
                   {session ? session.session_id.slice(0, 8) : t('terminal.select_session')}
-                  <MoreVertical className="w-4 h-4 ml-1" />
+                                    <EllipsisVerticalIcon className="w-4 h-4 ml-1" />
                 </Button>
               </DropdownTrigger>
               <DropdownMenu aria-label="Sessions">
@@ -240,7 +240,7 @@ export default function TerminalPage() {
                           handleTerminateSession(s.session_id)
                         }}
                       >
-                        <Trash2 className="w-3 h-3" />
+                                                <TrashIcon className="w-3 h-3" />
                       </Button>
                     }
                   >
@@ -256,7 +256,7 @@ export default function TerminalPage() {
                   key="terminate-all"
                   color="danger"
                   className="text-danger"
-                  startContent={<Trash className="w-4 h-4" />}
+                  startContent={<TrashIcon className="w-4 h-4" />}
                   onPress={handleTerminateAllSessions}
                 >
                   {t('terminal.terminate_all')}
@@ -269,7 +269,7 @@ export default function TerminalPage() {
           <Button
             color="primary"
             size="sm"
-            startContent={<Plus className="w-4 h-4" />}
+            startContent={<PlusIcon className="w-4 h-4" />}
             onPress={onNewSessionOpen}
             isLoading={isCreating}
           >
@@ -303,7 +303,7 @@ export default function TerminalPage() {
                   size="sm"
                   color="danger"
                   variant="flat"
-                  startContent={<Trash className="w-4 h-4" />}
+                  startContent={<TrashIcon className="w-4 h-4" />}
                   onPress={handleTerminateAllSessions}
                 >
                   {t('terminal.terminate_all')}
@@ -321,7 +321,7 @@ export default function TerminalPage() {
                       <div className="flex items-start justify-between">
                         <div className="flex items-center gap-3">
                           <div className="p-2 rounded-lg bg-primary/10">
-                            <TerminalIcon className="w-5 h-5 text-primary" />
+                                                        <CommandLineIcon className="w-5 h-5 text-primary" />
                           </div>
                           <div>
                             <p className="font-medium">{s.name}</p>
@@ -338,7 +338,7 @@ export default function TerminalPage() {
                             handleTerminateSession(s.session_id)
                           }}
                         >
-                          <Trash2 className="w-4 h-4" />
+                                                    <TrashIcon className="w-4 h-4" />
                         </div>
                       </div>
                       <div className="flex items-center gap-2 mt-3">
@@ -361,7 +361,7 @@ export default function TerminalPage() {
                   onPress={onNewSessionOpen}
                 >
                   <CardBody className="flex flex-col items-center justify-center p-6 text-default-400">
-                    <Plus className="w-8 h-8 mb-2" />
+                                        <PlusIcon className="w-8 h-8 mb-2" />
                     <p>{t('terminal.create_session')}</p>
                   </CardBody>
                 </Card>
@@ -369,11 +369,11 @@ export default function TerminalPage() {
             </div>
           ) : (
             <div className="flex flex-col items-center justify-center h-full gap-4 text-default-400">
-              <TerminalIcon className="w-16 h-16" />
+                            <CommandLineIcon className="w-16 h-16" />
               <p>{t('terminal.no_session')}</p>
               <Button
                 color="primary"
-                startContent={<Plus className="w-4 h-4" />}
+                startContent={<PlusIcon className="w-4 h-4" />}
                 onPress={onNewSessionOpen}
               >
                 {t('terminal.create_session')}

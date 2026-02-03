@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { Card, CardBody, CardHeader, Input, Button, Switch } from '@heroui/react'
-import { Server, AlertTriangle, Save } from 'lucide-react'
+import { ServerIcon, ExclamationTriangleIcon, ArrowDownTrayIcon } from '@heroicons/react/24/outline'
 import { toast } from 'sonner'
 import { useSettings, useUpdateSettings } from '../hooks/useSettings'
 import { useEffect } from 'react'
@@ -71,7 +71,7 @@ export function ServerSettings() {
   return (
     <Card>
       <CardHeader className="flex gap-3">
-        <Server className="h-5 w-5 text-primary" />
+                  <ServerIcon className="h-5 w-5 text-primary" />
         <div className="flex flex-col">
           <p className="text-md font-semibold">{t('settings.server.title')}</p>
           <p className="text-small text-default-500">{t('settings.server.description')}</p>
@@ -80,7 +80,7 @@ export function ServerSettings() {
       <CardBody>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="flex items-center gap-2 p-3 bg-warning-50 dark:bg-warning-900/20 rounded-lg">
-            <AlertTriangle className="h-4 w-4 text-warning" />
+                        <ExclamationTriangleIcon className="h-4 w-4 text-warning" />
             <span className="text-sm text-warning-600 dark:text-warning-400">
               {t('settings.server.restartRequired')}
             </span>
@@ -95,7 +95,7 @@ export function ServerSettings() {
             isInvalid={!!errors.https_port}
             errorMessage={errors.https_port?.message}
             description={t('settings.server.httpsPortHint')}
-            startContent={<Server className="h-4 w-4 text-default-400" />}
+            startContent={<ServerIcon className="h-4 w-4 text-default-400" />}
             {...register('https_port', { valueAsNumber: true })}
           />
 
@@ -117,7 +117,7 @@ export function ServerSettings() {
               color="primary"
               isLoading={updateSettings.isPending}
               isDisabled={!isDirty}
-              startContent={!updateSettings.isPending && <Save className="h-4 w-4" />}
+              startContent={!updateSettings.isPending && <ArrowDownTrayIcon className="h-4 w-4" />}
             >
               {t('settings.save')}
             </Button>

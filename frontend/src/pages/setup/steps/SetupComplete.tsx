@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
-import { CheckCircle, XCircle, RefreshCw } from 'lucide-react'
+import { CheckCircleIcon, XCircleIcon, ArrowPathIcon } from '@heroicons/react/24/outline'
 import { Button, Spinner } from '@heroui/react'
 import { cn } from '@/lib/utils'
 import { getApiHeaders } from '@/lib/api'
@@ -111,12 +111,12 @@ export const SetupComplete = ({ setupData }: SetupCompleteProps) => {
     return (
       <div className="flex flex-col items-center justify-center py-8">
         <div className="bg-danger/10 rounded-full p-3 mb-4">
-          <XCircle className="h-8 w-8 text-danger" />
+          <XCircleIcon className="h-8 w-8 text-danger" />
         </div>
         <h3 className="font-semibold mb-1">{t('setup-failed')}</h3>
         <p className="text-sm text-danger text-center mb-4">{error}</p>
         <Button variant="bordered" size="sm" onPress={completeSetup}>
-          <RefreshCw className="mr-2 h-4 w-4" />
+          <ArrowPathIcon className="mr-2 h-4 w-4" />
           {t('retry')}
         </Button>
       </div>
@@ -137,7 +137,7 @@ export const SetupComplete = ({ setupData }: SetupCompleteProps) => {
           transition={{ delay: 0.2, type: 'spring', stiffness: 200, damping: 15 }}
           className="bg-green-100 dark:bg-green-900/30 rounded-full p-3 mb-4"
         >
-          <CheckCircle className="h-8 w-8 text-green-600 dark:text-green-400" />
+          <CheckCircleIcon className="h-8 w-8 text-green-600 dark:text-green-400" />
         </motion.div>
 
         <motion.h2

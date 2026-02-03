@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { StatCard } from './StatCard'
-import { ArrowDown, ArrowUp, Network } from 'lucide-react'
+import { ArrowDownIcon, ArrowUpIcon, GlobeAltIcon } from '@heroicons/react/24/outline'
 
 interface NetworkCardProps {
   rxSpeed: number
@@ -18,11 +18,11 @@ export function NetworkCard({ rxSpeed, txSpeed }: NetworkCardProps) {
   const { t } = useTranslation()
   
   return (
-    <StatCard title={t('dashboard.network')} icon={<Network size={18} />}>
+    <StatCard title={t('dashboard.network')} icon={<GlobeAltIcon className="w-[18px] h-[18px]" />}>
       <div className="grid grid-cols-2 gap-4">
         <div className="flex flex-col items-center justify-center p-3 rounded-xl bg-primary/5 text-primary">
           <div className="flex items-center gap-1 text-xs mb-1 opacity-70">
-            <ArrowDown size={14} />
+            <ArrowDownIcon className="w-[14px] h-[14px]" />
             {t('dashboard.rxSpeed')}
           </div>
           <span className="text-xl font-bold font-mono tracking-tight">{formatSpeed(rxSpeed)}</span>
@@ -30,7 +30,7 @@ export function NetworkCard({ rxSpeed, txSpeed }: NetworkCardProps) {
         
         <div className="flex flex-col items-center justify-center p-3 rounded-xl bg-secondary/5 text-secondary">
           <div className="flex items-center gap-1 text-xs mb-1 opacity-70">
-            <ArrowUp size={14} />
+            <ArrowUpIcon className="w-[14px] h-[14px]" />
             {t('dashboard.txSpeed')}
           </div>
           <span className="text-xl font-bold font-mono tracking-tight">{formatSpeed(txSpeed)}</span>

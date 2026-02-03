@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { StatCard } from './StatCard'
-import { Database } from 'lucide-react'
+import { CircleStackIcon } from '@heroicons/react/24/outline'
 import { Progress } from '@heroui/react'
 
 interface DiskCardProps {
@@ -30,7 +30,7 @@ export function DiskCard({ disks }: DiskCardProps) {
   }
 
   return (
-    <StatCard title={t('dashboard.disk')} icon={<Database size={18} />} className="col-span-1 md:col-span-2">
+    <StatCard title={t('dashboard.disk')} icon={<CircleStackIcon className="w-[18px] h-[18px]" />} className="col-span-1 md:col-span-2">
       <div className="flex flex-col gap-4">
         {disks.map((disk) => (
           <div key={disk.mount_point} className="flex flex-col gap-2">

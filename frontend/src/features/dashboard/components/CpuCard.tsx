@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { StatCard } from './StatCard'
-import { Cpu } from 'lucide-react'
+import { CpuChipIcon } from '@heroicons/react/24/outline'
 import { CircularProgress } from '@heroui/react'
 
 interface CpuCardProps {
@@ -18,7 +18,7 @@ export function CpuCard({ usage, cores }: CpuCardProps) {
   }
 
   return (
-    <StatCard title={t('dashboard.cpu')} icon={<Cpu size={18} />}>
+    <StatCard title={t('dashboard.cpu')} icon={<CpuChipIcon className="w-[18px] h-[18px]" />}>
       <div className="flex flex-col items-center justify-center py-2">
         <CircularProgress
           classNames={{

@@ -67,10 +67,16 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         server::https::ServerManager::start(state).await?;
     } else {
         // Normal startup: initialize tracing and start server
+        let log_filter = if args.is_debug_mode() {
+            "debug,hyper=info,tower_http=info"
+        } else {
+            "info"
+        };
+        
         tracing_subscriber::registry()
             .with(
                 tracing_subscriber::EnvFilter::try_from_default_env()
-                    .unwrap_or_else(|_| "info,kumadash=debug".into()),
+                    .unwrap_or_else(|_| log_filter.into()),
             )
             .with(tracing_subscriber::fmt::layer())
             .init();

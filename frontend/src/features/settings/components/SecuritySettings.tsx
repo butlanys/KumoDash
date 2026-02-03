@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { Card, CardBody, CardHeader, Input, Button } from '@heroui/react'
-import { Shield, Clock, Save } from 'lucide-react'
+import { ShieldCheckIcon, ClockIcon, ArrowDownTrayIcon } from '@heroicons/react/24/outline'
 import { toast } from 'sonner'
 import { useSettings, useUpdateSettings } from '../hooks/useSettings'
 import { useEffect } from 'react'
@@ -66,7 +66,7 @@ export function SecuritySettings() {
   return (
     <Card>
       <CardHeader className="flex gap-3">
-        <Shield className="h-5 w-5 text-primary" />
+                  <ShieldCheckIcon className="h-5 w-5 text-primary" />
         <div className="flex flex-col">
           <p className="text-md font-semibold">{t('settings.security.title')}</p>
           <p className="text-small text-default-500">{t('settings.security.description')}</p>
@@ -81,7 +81,7 @@ export function SecuritySettings() {
             isInvalid={!!errors.auth_path_prefix}
             errorMessage={errors.auth_path_prefix?.message}
             description={t('settings.security.loginPathHint')}
-            startContent={<Shield className="h-4 w-4 text-default-400" />}
+            startContent={<ShieldCheckIcon className="h-4 w-4 text-default-400" />}
             {...register('auth_path_prefix')}
           />
 
@@ -94,7 +94,7 @@ export function SecuritySettings() {
             isInvalid={!!errors.session_timeout_minutes}
             errorMessage={errors.session_timeout_minutes?.message}
             description={t('settings.security.sessionTimeoutHint')}
-            startContent={<Clock className="h-4 w-4 text-default-400" />}
+            startContent={<ClockIcon className="h-4 w-4 text-default-400" />}
             {...register('session_timeout_minutes', { valueAsNumber: true })}
           />
 
@@ -104,7 +104,7 @@ export function SecuritySettings() {
               color="primary"
               isLoading={updateSettings.isPending}
               isDisabled={!isDirty}
-              startContent={!updateSettings.isPending && <Save className="h-4 w-4" />}
+              startContent={!updateSettings.isPending && <ArrowDownTrayIcon className="h-4 w-4" />}
             >
               {t('settings.save')}
             </Button>

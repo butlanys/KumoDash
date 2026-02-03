@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
-import { User, Lock, Eye, EyeOff, ArrowLeft, ArrowRight, Check, X } from 'lucide-react'
+import { UserIcon, LockClosedIcon, EyeIcon, EyeSlashIcon, ArrowLeftIcon, ArrowRightIcon, CheckIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { Button, Input, Checkbox } from '@heroui/react'
 import { cn } from '@/lib/utils'
 
@@ -168,7 +168,7 @@ export const SetupAdmin = ({ initialData, onNext, onBack }: SetupAdminProps) => 
             maxLength={50}
             isInvalid={touched.username && !!errors.username}
             errorMessage={touched.username && errors.username}
-            startContent={<User className="h-4 w-4 text-default-500" />}
+            startContent={<UserIcon className="h-4 w-4 text-default-500" />}
           />
           <p className="text-xs text-default-500">{t('username-hint')}</p>
         </div>
@@ -183,14 +183,14 @@ export const SetupAdmin = ({ initialData, onNext, onBack }: SetupAdminProps) => 
             placeholder={t('enter-password')}
             isInvalid={touched.password && !!errors.password}
             errorMessage={touched.password && errors.password}
-            startContent={<Lock className="h-4 w-4 text-default-500" />}
+            startContent={<LockClosedIcon className="h-4 w-4 text-default-500" />}
             endContent={
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
                 className="text-default-500 hover:text-foreground focus:outline-none"
               >
-                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                {showPassword ? <EyeSlashIcon className="h-4 w-4" /> : <EyeIcon className="h-4 w-4" />}
               </button>
             }
           />
@@ -240,7 +240,7 @@ export const SetupAdmin = ({ initialData, onNext, onBack }: SetupAdminProps) => 
                       req.met ? 'text-green-600' : 'text-default-500'
                     )}
                   >
-                    {req.met ? <Check className="h-3 w-3" /> : <X className="h-3 w-3" />}
+                    {req.met ? <CheckIcon className="h-3 w-3" /> : <XMarkIcon className="h-3 w-3" />}
                     {req.label}
                   </span>
                 ))}
@@ -259,20 +259,20 @@ export const SetupAdmin = ({ initialData, onNext, onBack }: SetupAdminProps) => 
             placeholder={t('enter-password')}
             isInvalid={touched.confirmPassword && !!errors.confirmPassword}
             errorMessage={touched.confirmPassword && errors.confirmPassword}
-            startContent={<Lock className="h-4 w-4 text-default-500" />}
+            startContent={<LockClosedIcon className="h-4 w-4 text-default-500" />}
             endContent={
               <button
                 type="button"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                 className="text-default-500 hover:text-foreground focus:outline-none"
               >
-                {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                {showConfirmPassword ? <EyeSlashIcon className="h-4 w-4" /> : <EyeIcon className="h-4 w-4" />}
               </button>
             }
           />
           {confirmPassword && !errors.confirmPassword && password === confirmPassword && (
             <p className="text-xs text-green-600 flex items-center gap-1">
-              <Check className="h-3 w-3" />
+              <CheckIcon className="h-3 w-3" />
               {t('passwords-match')}
             </p>
           )}
@@ -281,12 +281,12 @@ export const SetupAdmin = ({ initialData, onNext, onBack }: SetupAdminProps) => 
 
       <div className="flex justify-between pt-2">
         <Button variant="light" size="sm" onPress={onBack}>
-          <ArrowLeft className="h-4 w-4 mr-1" />
+          <ArrowLeftIcon className="h-4 w-4 mr-1" />
           {t('back')}
         </Button>
         <Button color="primary" size="sm" onPress={handleSubmit}>
           {t('next')}
-          <ArrowRight className="h-4 w-4 ml-1" />
+          <ArrowRightIcon className="h-4 w-4 ml-1" />
         </Button>
       </div>
     </motion.div>

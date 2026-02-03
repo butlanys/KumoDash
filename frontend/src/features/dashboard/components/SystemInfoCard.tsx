@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { StatCard } from './StatCard'
-import { Server, Activity } from 'lucide-react'
+import { ServerIcon, ChartBarIcon } from '@heroicons/react/24/outline'
 import { Chip } from '@heroui/react'
 
 interface SystemInfoCardProps {
@@ -29,7 +29,7 @@ export function SystemInfoCard({ data }: SystemInfoCardProps) {
   const { t } = useTranslation()
 
   return (
-    <StatCard title={t('dashboard.systemInfo')} icon={<Server size={18} />}>
+    <StatCard title={t('dashboard.systemInfo')} icon={<ServerIcon className="w-[18px] h-[18px]" />}>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="flex flex-col gap-1">
           <span className="text-xs text-default-500">{t('dashboard.hostname')}</span>
@@ -47,7 +47,7 @@ export function SystemInfoCard({ data }: SystemInfoCardProps) {
         <div className="flex flex-col gap-1">
           <span className="text-xs text-default-500">{t('dashboard.uptime')}</span>
           <div className="flex items-center gap-2 text-success-600">
-            <Activity size={16} />
+                        <ChartBarIcon className="w-4 h-4" />
             <span className="font-mono font-medium">{formatUptime(data.uptime)}</span>
           </div>
         </div>

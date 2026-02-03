@@ -56,3 +56,25 @@ success.terminal.session_terminated: "终端会话已终止"
 # 系统成功消息
 success.system.restart_panel: "面板正在重启..."
 success.system.restart_server: "服务器正在重启..."
+
+# 文件管理错误
+errors.files.path_must_be_absolute: "路径必须是绝对路径"
+errors.files.path_not_found: "路径不存在"
+errors.files.parent_not_found: "父目录不存在"
+errors.files.invalid_path: "无效的路径"
+errors.files.not_a_directory: "不是目录"
+errors.files.is_directory: "是目录，不是文件"
+errors.files.file_not_found: "文件不存在"
+errors.files.access_denied: "无权访问路径: %{path}"
+errors.files.read_error: "读取文件失败: %{detail}"
+errors.files.write_error: "写入文件失败: %{detail}"
+errors.files.too_large: "文件过大 (%{size} 字节)，最大允许 %{max} 字节"
+errors.files.exists: "文件已存在: %{path}"
+
+# 文件管理成功消息
+success.files.written: "文件已保存"
+success.files.directory_created: "目录已创建"
+success.files.renamed: "重命名成功"
+success.files.copied: "复制成功"
+success.files.deleted: "删除成功"
+success.files.uploaded: "上传成功"

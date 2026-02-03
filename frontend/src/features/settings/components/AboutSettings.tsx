@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { Card, CardBody, CardHeader, Link, Divider } from '@heroui/react'
-import { Info, Github, FileText, Heart } from 'lucide-react'
+import { InformationCircleIcon, DocumentTextIcon, HeartIcon, LinkIcon } from '@heroicons/react/24/outline'
 import { useSystemStatus } from '@/features/dashboard/hooks/useSystemStatus'
 
 const VERSION = '0.1.0'
@@ -14,7 +14,7 @@ export function AboutSettings() {
     <div className="space-y-6">
       <Card>
         <CardHeader className="flex gap-3">
-          <Info className="h-5 w-5 text-primary" />
+                    <InformationCircleIcon className="h-5 w-5 text-primary" />
           <div className="flex flex-col">
             <p className="text-md font-semibold">{t('settings.about.title')}</p>
             <p className="text-small text-default-500">{t('settings.about.description')}</p>
@@ -54,7 +54,7 @@ export function AboutSettings() {
 
       <Card>
         <CardHeader className="flex gap-3">
-          <FileText className="h-5 w-5 text-primary" />
+                    <DocumentTextIcon className="h-5 w-5 text-primary" />
           <div className="flex flex-col">
             <p className="text-md font-semibold">{t('settings.about.license')}</p>
           </div>
@@ -74,11 +74,11 @@ export function AboutSettings() {
             showAnchorIcon
             className="flex items-center gap-2 text-default-600 hover:text-primary"
           >
-            <Github className="h-4 w-4" />
+            <LinkIcon className="h-4 w-4" />
             GitHub
           </Link>
           <span className="flex items-center gap-1 text-sm text-default-500">
-            {t('settings.about.madeWith')} <Heart className="h-3 w-3 text-danger" />
+            {t('settings.about.madeWith')} <HeartIcon className="h-3 w-3 text-danger" />
           </span>
         </CardBody>
       </Card>

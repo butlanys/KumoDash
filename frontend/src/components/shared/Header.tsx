@@ -12,7 +12,7 @@ import {
   NavbarContent,
   NavbarItem
 } from '@heroui/react'
-import { Menu, Sun, Moon, Laptop, LogOut, RotateCcw, Power } from 'lucide-react'
+import { Bars3Icon, SunIcon, MoonIcon, ComputerDesktopIcon, ArrowRightOnRectangleIcon, ArrowPathIcon, PowerIcon } from '@heroicons/react/24/outline'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 
@@ -94,7 +94,7 @@ export function Header({ onMenuClick, isMobile }: HeaderProps) {
       <NavbarContent justify="start">
         {isMobile && (
           <Button isIconOnly variant="light" onPress={onMenuClick}>
-            <Menu size={24} />
+            <Bars3Icon className="w-6 h-6" />
           </Button>
         )}
       </NavbarContent>
@@ -114,18 +114,18 @@ export function Header({ onMenuClick, isMobile }: HeaderProps) {
         <Dropdown>
           <DropdownTrigger>
             <Button isIconOnly variant="light">
-              {theme === 'light' ? <Sun size={20} /> : 
-               theme === 'dark' ? <Moon size={20} /> : <Laptop size={20} />}
+              {theme === 'light' ? <SunIcon className="w-5 h-5" /> : 
+               theme === 'dark' ? <MoonIcon className="w-5 h-5" /> : <ComputerDesktopIcon className="w-5 h-5" />}
             </Button>
           </DropdownTrigger>
           <DropdownMenu aria-label="Theme actions" onAction={(key) => setTheme(key as 'light' | 'dark' | 'system')}>
-            <DropdownItem key="light" startContent={<Sun size={16} />}>
+            <DropdownItem key="light" startContent={<SunIcon className="w-4 h-4" />}>
               {t('header.themeLight')}
             </DropdownItem>
-            <DropdownItem key="dark" startContent={<Moon size={16} />}>
+            <DropdownItem key="dark" startContent={<MoonIcon className="w-4 h-4" />}>
               {t('header.themeDark')}
             </DropdownItem>
-            <DropdownItem key="system" startContent={<Laptop size={16} />}>
+            <DropdownItem key="system" startContent={<ComputerDesktopIcon className="w-4 h-4" />}>
               {t('header.themeSystem')}
             </DropdownItem>
           </DropdownMenu>
@@ -134,13 +134,13 @@ export function Header({ onMenuClick, isMobile }: HeaderProps) {
         <Dropdown>
           <DropdownTrigger>
             <Button isIconOnly variant="light">
-              <Power size={20} />
+              <PowerIcon className="w-5 h-5" />
             </Button>
           </DropdownTrigger>
           <DropdownMenu aria-label="Power actions">
             <DropdownItem 
               key="restart-panel" 
-              startContent={<RotateCcw size={16} />}
+              startContent={<ArrowPathIcon className="w-4 h-4" />}
               onPress={handleRestartPanel}
             >
               {t('header.restartPanel')}
@@ -148,7 +148,7 @@ export function Header({ onMenuClick, isMobile }: HeaderProps) {
             <DropdownItem 
               key="restart-server" 
               color="danger"
-              startContent={<Power size={16} />}
+              startContent={<PowerIcon className="w-4 h-4" />}
               onPress={handleRestartServer}
             >
               {t('header.restartServer')}
@@ -172,7 +172,7 @@ export function Header({ onMenuClick, isMobile }: HeaderProps) {
             />
           </DropdownTrigger>
           <DropdownMenu aria-label="User Actions" variant="flat">
-            <DropdownItem key="logout" color="danger" startContent={<LogOut size={16} />} onPress={logout}>
+            <DropdownItem key="logout" color="danger" startContent={<ArrowRightOnRectangleIcon className="w-4 h-4" />} onPress={logout}>
               {t('header.logout')}
             </DropdownItem>
           </DropdownMenu>

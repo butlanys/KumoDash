@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { motion, AnimatePresence } from 'framer-motion'
-import { AlertCircle } from 'lucide-react'
+import { ExclamationCircleIcon } from '@heroicons/react/24/outline'
 import { Card, CardBody, CardHeader, Spinner } from '@heroui/react'
 import { cn } from '@/lib/utils'
 import { getApiHeaders } from '@/lib/api'
@@ -99,7 +99,7 @@ export const SetupPage = () => {
           <Card className="border-none shadow-lg">
             <CardHeader className="flex flex-col items-center text-center pb-4">
               <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-danger/10">
-                <AlertCircle className="h-8 w-8 text-danger" />
+                <ExclamationCircleIcon className="h-8 w-8 text-danger" />
               </div>
               <h2 className="text-2xl font-semibold text-danger">
                 {t('invalid-setup-link')}

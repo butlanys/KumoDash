@@ -5,7 +5,7 @@ edition = "2021"
 
 [dependencies]
 # Web framework
-axum = { version = "0.8", features = ["ws"] }
+axum = { version = "0.8", features = ["ws", "multipart"] }
 tokio = { version = "1", features = ["full"] }
 tower = "0.5"
 tower-http = { version = "0.6", features = ["cors", "trace", "fs", "set-header"] }
@@ -57,6 +57,10 @@ tokio-tungstenite = "0.21"
 futures-util = "0.3"
 dashmap = "5"
 portable-pty = "0.9"
+
+# File management
+tokio-util = { version = "0.7", features = ["io"] }
+users = "0.11"
 
 [dev-dependencies]
 tower = { version = "0.5", features = ["util"] }

@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
-import { ChevronLeft, ChevronRight, Cloud } from 'lucide-react'
+import { ChevronLeftIcon, ChevronRightIcon, CloudIcon } from '@heroicons/react/24/outline'
 import { cn } from '@/lib/utils'
 import { Button } from '@heroui/react'
 import { navItems } from '@/config/navigation'
@@ -33,7 +33,7 @@ export function Sidebar({ isOpen, onToggle, isMobile }: SidebarProps) {
       <div className="flex h-16 items-center justify-between px-4">
         <div className="flex items-center gap-2 overflow-hidden">
           <div className="flex h-8 w-8 min-w-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
-            <Cloud size={20} />
+                        <CloudIcon className="w-5 h-5" />
           </div>
           <motion.span
             animate={{ opacity: isOpen ? 1 : 0, display: isOpen ? "block" : "none" }}
@@ -58,7 +58,7 @@ export function Sidebar({ isOpen, onToggle, isMobile }: SidebarProps) {
               )
             }
           >
-            <item.icon size={20} className="min-w-[20px]" />
+                      <item.icon className="w-5 h-5 min-w-[20px]" />
             <motion.span
               animate={{ opacity: isOpen ? 1 : 0, display: isOpen ? "block" : "none" }}
               className="whitespace-nowrap"
@@ -80,7 +80,7 @@ export function Sidebar({ isOpen, onToggle, isMobile }: SidebarProps) {
             onPress={onToggle}
             aria-label={isOpen ? t('sidebar.collapse') : t('sidebar.expand')}
           >
-            {isOpen ? <ChevronLeft size={16} /> : <ChevronRight size={16} />}
+                        {isOpen ? <ChevronLeftIcon className="w-4 h-4" /> : <ChevronRightIcon className="w-4 h-4" />}
           </Button>
         </div>
       )}

@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
-import { Cloud, Shield, User, CheckCircle } from 'lucide-react'
+import { CloudIcon, ShieldCheckIcon, UserIcon, CheckCircleIcon } from '@heroicons/react/24/outline'
 import { Button } from '@heroui/react'
 
 interface SetupWelcomeProps {
@@ -11,9 +11,9 @@ export const SetupWelcome = ({ onNext }: SetupWelcomeProps) => {
   const { t } = useTranslation()
 
   const setupSteps = [
-    { icon: Shield, label: t('configure-security'), description: t('configure-security-desc') },
-    { icon: User, label: t('create-admin'), description: t('create-admin-desc') },
-    { icon: CheckCircle, label: t('complete-installation'), description: t('complete-installation-desc') },
+    { icon: ShieldCheckIcon, label: t('configure-security'), description: t('configure-security-desc') },
+    { icon: UserIcon, label: t('create-admin'), description: t('create-admin-desc') },
+    { icon: CheckCircleIcon, label: t('complete-installation'), description: t('complete-installation-desc') },
   ]
 
   return (
@@ -25,7 +25,7 @@ export const SetupWelcome = ({ onNext }: SetupWelcomeProps) => {
         className="flex flex-col items-center space-y-3"
       >
         <div className="flex h-14 w-14 items-center justify-center rounded-full bg-primary/10">
-          <Cloud className="h-7 w-7 text-primary" />
+          <CloudIcon className="h-7 w-7 text-primary" />
         </div>
         <div className="text-center space-y-1">
           <h2 className="text-lg font-semibold text-default-900">{t('welcome-to-kumodash')}</h2>

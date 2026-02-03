@@ -61,6 +61,21 @@ pub enum AppError {
 
     #[error("TERMINAL_WS_TOKEN_EXPIRED")]
     TerminalWsTokenExpired,
+
+    #[error("FILE_ACCESS_DENIED")]
+    FileAccessDenied(String),
+
+    #[error("FILE_READ_ERROR")]
+    FileReadError(String),
+
+    #[error("FILE_WRITE_ERROR")]
+    FileWriteError(String),
+
+    #[error("FILE_TOO_LARGE")]
+    FileTooLarge(u64, u64),
+
+    #[error("FILE_EXISTS")]
+    FileExists(String),
 }
 
 /// Error response detail
@@ -98,6 +113,11 @@ impl AppError {
             AppError::TerminalTmuxError(_) => "TERMINAL_TMUX_ERROR",
             AppError::TerminalWsTokenInvalid => "TERMINAL_WS_TOKEN_INVALID",
             AppError::TerminalWsTokenExpired => "TERMINAL_WS_TOKEN_EXPIRED",
+            AppError::FileAccessDenied(_) => "FILE_ACCESS_DENIED",
+            AppError::FileReadError(_) => "FILE_READ_ERROR",
+            AppError::FileWriteError(_) => "FILE_WRITE_ERROR",
+            AppError::FileTooLarge(_, _) => "FILE_TOO_LARGE",
+            AppError::FileExists(_) => "FILE_EXISTS",
         }
     }
 
@@ -121,6 +141,11 @@ impl AppError {
             AppError::TerminalTmuxError(_) => StatusCode::INTERNAL_SERVER_ERROR,
             AppError::TerminalWsTokenInvalid => StatusCode::UNAUTHORIZED,
             AppError::TerminalWsTokenExpired => StatusCode::UNAUTHORIZED,
+            AppError::FileAccessDenied(_) => StatusCode::FORBIDDEN,
+            AppError::FileReadError(_) => StatusCode::INTERNAL_SERVER_ERROR,
+            AppError::FileWriteError(_) => StatusCode::INTERNAL_SERVER_ERROR,
+            AppError::FileTooLarge(_, _) => StatusCode::PAYLOAD_TOO_LARGE,
+            AppError::FileExists(_) => StatusCode::CONFLICT,
         }
     }
 
@@ -144,6 +169,11 @@ impl AppError {
             AppError::TerminalTmuxError(detail) => t!("errors.terminal.tmux_error", detail = detail).to_string(),
             AppError::TerminalWsTokenInvalid => t!("errors.terminal.ws_token_invalid").to_string(),
             AppError::TerminalWsTokenExpired => t!("errors.terminal.ws_token_expired").to_string(),
+            AppError::FileAccessDenied(path) => t!("errors.files.access_denied", path = path).to_string(),
+            AppError::FileReadError(detail) => t!("errors.files.read_error", detail = detail).to_string(),
+            AppError::FileWriteError(detail) => t!("errors.files.write_error", detail = detail).to_string(),
+            AppError::FileTooLarge(size, max) => t!("errors.files.too_large", size = size, max = max).to_string(),
+            AppError::FileExists(path) => t!("errors.files.exists", path = path).to_string(),
         }
     }
 }

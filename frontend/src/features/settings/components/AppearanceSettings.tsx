@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { useEffect, useState } from 'react'
 import { Card, CardBody, CardHeader, RadioGroup, Radio } from '@heroui/react'
-import { Palette, Sun, Moon, Laptop, Languages } from 'lucide-react'
+import { SwatchIcon, SunIcon, MoonIcon, ComputerDesktopIcon, LanguageIcon } from '@heroicons/react/24/outline'
 
 type Theme = 'light' | 'dark' | 'system'
 type Language = 'zh' | 'en'
@@ -51,7 +51,7 @@ export function AppearanceSettings() {
     <div className="space-y-6">
       <Card>
         <CardHeader className="flex gap-3">
-          <Palette className="h-5 w-5 text-primary" />
+                    <SwatchIcon className="h-5 w-5 text-primary" />
           <div className="flex flex-col">
             <p className="text-md font-semibold">{t('settings.appearance.theme')}</p>
             <p className="text-small text-default-500">{t('settings.appearance.themeDescription')}</p>
@@ -74,7 +74,7 @@ export function AppearanceSettings() {
               }}
             >
               <div className="flex items-center gap-2">
-                <Sun className="h-4 w-4" />
+                                <SunIcon className="h-4 w-4" />
                 <span>{t('settings.appearance.light')}</span>
               </div>
             </Radio>
@@ -86,7 +86,7 @@ export function AppearanceSettings() {
               }}
             >
               <div className="flex items-center gap-2">
-                <Moon className="h-4 w-4" />
+                                <MoonIcon className="h-4 w-4" />
                 <span>{t('settings.appearance.dark')}</span>
               </div>
             </Radio>
@@ -98,7 +98,7 @@ export function AppearanceSettings() {
               }}
             >
               <div className="flex items-center gap-2">
-                <Laptop className="h-4 w-4" />
+                                <ComputerDesktopIcon className="h-4 w-4" />
                 <span>{t('settings.appearance.system')}</span>
               </div>
             </Radio>
@@ -108,7 +108,7 @@ export function AppearanceSettings() {
 
       <Card>
         <CardHeader className="flex gap-3">
-          <Languages className="h-5 w-5 text-primary" />
+                    <LanguageIcon className="h-5 w-5 text-primary" />
           <div className="flex flex-col">
             <p className="text-md font-semibold">{t('settings.appearance.language')}</p>
             <p className="text-small text-default-500">{t('settings.appearance.languageDescription')}</p>

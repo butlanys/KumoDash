@@ -1,6 +1,7 @@
 //! API routes
 
 pub mod auth;
+pub mod files;
 pub mod setup;
 pub mod system;
 pub mod terminal;
@@ -64,6 +65,21 @@ pub fn create_router(state: AppState) -> Router {
         .route("/api/v1/terminal/sessions/{id}", delete(crate::handlers::terminal::terminate_session))
         .layer(middleware::from_fn_with_state(state.clone(), auth_middleware));
 
+    // File management routes (protected)
+    let file_routes = Router::new()
+        .route("/api/v1/files", get(crate::handlers::files::list_dir))
+        .route("/api/v1/files/read", get(crate::handlers::files::read_file))
+        .route("/api/v1/files/write", put(crate::handlers::files::write_file))
+        .route("/api/v1/files/mkdir", post(crate::handlers::files::create_dir))
+        .route("/api/v1/files/rename", put(crate::handlers::files::rename))
+        .route("/api/v1/files/copy", post(crate::handlers::files::copy))
+        .route("/api/v1/files/delete", delete(crate::handlers::files::delete))
+        .route("/api/v1/files/stat", get(crate::handlers::files::stat))
+        .route("/api/v1/files/search", post(crate::handlers::files::search))
+        .route("/api/v1/files/download", get(crate::handlers::files::download))
+        .route("/api/v1/files/upload", post(crate::handlers::files::upload))
+        .layer(middleware::from_fn_with_state(state.clone(), auth_middleware));
+
     // WebSocket route (token verified in handler)
     let ws_routes = Router::new()
         .route("/api/v1/terminal/ws/{id}", get(crate::handlers::terminal_ws::ws_upgrade));
@@ -80,6 +96,7 @@ pub fn create_router(state: AppState) -> Router {
         .merge(public_routes)
         .merge(protected_routes)
         .merge(terminal_routes)
+        .merge(file_routes)
         .merge(ws_routes)
         .merge(static_routes)
         .layer(
