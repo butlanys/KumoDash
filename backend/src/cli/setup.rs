@@ -78,7 +78,7 @@ fn is_port_available(port: u16) -> bool {
 pub fn run_first_time_setup() -> Result<u16, Box<dyn std::error::Error>> {
     // Print banner
     println!("{}", BANNER);
-    println!("轻量级云端服务器控制台 v0.1.0");
+    println!("轻量级云端服务器控制台 v0.2.0");
     println!();
     println!("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
     println!("首次启动，请配置服务");

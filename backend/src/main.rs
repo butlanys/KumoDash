@@ -81,7 +81,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             .with(tracing_subscriber::fmt::layer())
             .init();
 
-        tracing::info!("Starting KumoDash Backend v0.1.0");
+        tracing::info!("Starting KumoDash Backend v0.2.0");
         tracing::info!("Data directory: {}", args.data_dir.display());
         tracing::info!("Terminal feature uses portable-pty (no external dependencies)");
 
