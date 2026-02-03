@@ -72,9 +72,9 @@ test:
 # Run API security tests (requires running server)
 test-security:
 	@echo "Running API security tests..."
-	@echo "Note: Server must be running at https://localhost:8443"
+	@echo "Note: Server must be running at http://localhost:8443"
 	@echo ""
-	cd tests/security && ./run-security-tests.sh https://localhost:8443
+	cd tests/security && ./run-security-tests.sh http://localhost:8443
 
 # Run all tests
 test-all: test test-security
