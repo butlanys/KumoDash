@@ -8,6 +8,7 @@ import DashboardPage from './pages/DashboardPage'
 import SettingsPage from './pages/SettingsPage'
 import TerminalPage from './pages/TerminalPage'
 import FilesPage from './pages/FilesPage'
+import ServicesPage from './pages/ServicesPage'
 
 import { AuthProvider } from './features/auth/hooks/useAuth'
 import { AuthGuard } from './components/shared/AuthGuard'
@@ -39,6 +40,7 @@ function AppRoutes() {
           <Route path="/" element={<AuthGuard><AppLayout /></AuthGuard>}>
             <Route index element={<DashboardPage />} />
             <Route path="files" element={<FilesPage />} />
+            <Route path="services" element={<ServicesPage />} />
             <Route path="settings" element={<SettingsPage />} />
             <Route path="terminal" element={<TerminalPage />} />
           </Route>

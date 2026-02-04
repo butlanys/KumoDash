@@ -3,6 +3,7 @@ import {
   Cog6ToothIcon,
   CommandLineIcon,
   FolderOpenIcon,
+  ServerStackIcon,
 } from '@heroicons/react/24/outline'
 import type { ForwardRefExoticComponent, RefAttributes, SVGProps } from 'react'
 
@@ -31,6 +32,11 @@ export const navItems: NavItem[] = [
     key: 'sidebar.terminal',
     path: '/terminal',
     icon: CommandLineIcon,
+  },
+  {
+    key: 'sidebar.services',
+    path: '/services',
+    icon: ServerStackIcon,
   },
   {
     key: 'sidebar.settings',

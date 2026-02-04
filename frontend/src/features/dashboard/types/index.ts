@@ -32,3 +32,29 @@ export interface SystemStatus {
   process_count: number
   tcp_connections: number
 }
+
+export interface SystemMetricsPoint {
+  timestamp: number
+  cpu_usage: number
+  memory_usage_percent: number
+  disk_usage_percent: number
+  load_average: [number, number, number]
+  rx_bytes: number
+  tx_bytes: number
+  read_bytes: number
+  write_bytes: number
+}
+
+export interface SystemMetricsResponse {
+  points: SystemMetricsPoint[]
+  sample_interval_seconds: number
+}
+
+export interface SystemAlert {
+  id: number
+  metric: string
+  threshold: number
+  value: number
+  status: string
+  created_at: string
+}

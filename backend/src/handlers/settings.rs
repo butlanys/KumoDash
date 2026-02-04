@@ -16,6 +16,11 @@ pub struct SettingsResponse {
     pub session_timeout_minutes: u32,
     pub https_port: u16,
     pub debug_mode: bool,
+    pub metrics_sample_interval_seconds: u64,
+    pub metrics_retention_days: i64,
+    pub alert_cpu_percent: f32,
+    pub alert_memory_percent: f32,
+    pub alert_disk_percent: f32,
 }
 
 /// Update settings request
@@ -25,6 +30,11 @@ pub struct UpdateSettingsRequest {
     pub session_timeout_minutes: Option<u32>,
     pub https_port: Option<u16>,
     pub debug_mode: Option<bool>,
+    pub metrics_sample_interval_seconds: Option<u64>,
+    pub metrics_retention_days: Option<i64>,
+    pub alert_cpu_percent: Option<f32>,
+    pub alert_memory_percent: Option<f32>,
+    pub alert_disk_percent: Option<f32>,
 }
 
 /// Update settings response with restart hint
@@ -70,11 +80,56 @@ pub async fn get_settings(
     .map(|v| v == "true")
     .unwrap_or(false);
 
+    let metrics_sample_interval_seconds = sqlx::query_scalar::<_, String>(
+        "SELECT value FROM system_settings WHERE key = 'metrics_sample_interval_seconds'",
+    )
+    .fetch_optional(&state.pool)
+    .await?
+    .and_then(|v| v.parse().ok())
+    .unwrap_or(60);
+
+    let metrics_retention_days = sqlx::query_scalar::<_, String>(
+        "SELECT value FROM system_settings WHERE key = 'metrics_retention_days'",
+    )
+    .fetch_optional(&state.pool)
+    .await?
+    .and_then(|v| v.parse().ok())
+    .unwrap_or(7);
+
+    let alert_cpu_percent = sqlx::query_scalar::<_, String>(
+        "SELECT value FROM system_settings WHERE key = 'alert_cpu_percent'",
+    )
+    .fetch_optional(&state.pool)
+    .await?
+    .and_then(|v| v.parse().ok())
+    .unwrap_or(85.0);
+
+    let alert_memory_percent = sqlx::query_scalar::<_, String>(
+        "SELECT value FROM system_settings WHERE key = 'alert_memory_percent'",
+    )
+    .fetch_optional(&state.pool)
+    .await?
+    .and_then(|v| v.parse().ok())
+    .unwrap_or(85.0);
+
+    let alert_disk_percent = sqlx::query_scalar::<_, String>(
+        "SELECT value FROM system_settings WHERE key = 'alert_disk_percent'",
+    )
+    .fetch_optional(&state.pool)
+    .await?
+    .and_then(|v| v.parse().ok())
+    .unwrap_or(90.0);
+
     Ok(ApiResponse::success(SettingsResponse {
         auth_path_prefix,
         session_timeout_minutes,
         https_port,
         debug_mode,
+        metrics_sample_interval_seconds,
+        metrics_retention_days,
+        alert_cpu_percent,
+        alert_memory_percent,
+        alert_disk_percent,
     }))
 }
 
@@ -117,6 +172,61 @@ pub async fn update_settings(
     if let Some(debug_mode) = req.debug_mode {
         upsert_setting(&state.pool, "debug_mode", if debug_mode { "true" } else { "false" }).await?;
         requires_restart = true;
+    }
+
+    if let Some(metrics_sample_interval_seconds) = req.metrics_sample_interval_seconds {
+        if !(10..=3600).contains(&metrics_sample_interval_seconds) {
+            return Err(AppError::ValidationError(
+                t!("errors.settings.invalid_metrics_interval").to_string(),
+            ));
+        }
+        upsert_setting(
+            &state.pool,
+            "metrics_sample_interval_seconds",
+            &metrics_sample_interval_seconds.to_string(),
+        )
+        .await?;
+    }
+
+    if let Some(metrics_retention_days) = req.metrics_retention_days {
+        if !(1..=90).contains(&metrics_retention_days) {
+            return Err(AppError::ValidationError(
+                t!("errors.settings.invalid_metrics_retention").to_string(),
+            ));
+        }
+        upsert_setting(
+            &state.pool,
+            "metrics_retention_days",
+            &metrics_retention_days.to_string(),
+        )
+        .await?;
+    }
+
+    if let Some(alert_cpu_percent) = req.alert_cpu_percent {
+        if !(1.0..=100.0).contains(&alert_cpu_percent) {
+            return Err(AppError::ValidationError(
+                t!("errors.settings.invalid_alert_threshold").to_string(),
+            ));
+        }
+        upsert_setting(&state.pool, "alert_cpu_percent", &alert_cpu_percent.to_string()).await?;
+    }
+
+    if let Some(alert_memory_percent) = req.alert_memory_percent {
+        if !(1.0..=100.0).contains(&alert_memory_percent) {
+            return Err(AppError::ValidationError(
+                t!("errors.settings.invalid_alert_threshold").to_string(),
+            ));
+        }
+        upsert_setting(&state.pool, "alert_memory_percent", &alert_memory_percent.to_string()).await?;
+    }
+
+    if let Some(alert_disk_percent) = req.alert_disk_percent {
+        if !(1.0..=100.0).contains(&alert_disk_percent) {
+            return Err(AppError::ValidationError(
+                t!("errors.settings.invalid_alert_threshold").to_string(),
+            ));
+        }
+        upsert_setting(&state.pool, "alert_disk_percent", &alert_disk_percent.to_string()).await?;
     }
 
     let settings = fetch_all_settings(&state.pool).await?;
@@ -180,10 +290,55 @@ async fn fetch_all_settings(pool: &sqlx::SqlitePool) -> Result<SettingsResponse,
     .map(|v| v == "true")
     .unwrap_or(false);
 
+    let metrics_sample_interval_seconds = sqlx::query_scalar::<_, String>(
+        "SELECT value FROM system_settings WHERE key = 'metrics_sample_interval_seconds'",
+    )
+    .fetch_optional(pool)
+    .await?
+    .and_then(|v| v.parse().ok())
+    .unwrap_or(60);
+
+    let metrics_retention_days = sqlx::query_scalar::<_, String>(
+        "SELECT value FROM system_settings WHERE key = 'metrics_retention_days'",
+    )
+    .fetch_optional(pool)
+    .await?
+    .and_then(|v| v.parse().ok())
+    .unwrap_or(7);
+
+    let alert_cpu_percent = sqlx::query_scalar::<_, String>(
+        "SELECT value FROM system_settings WHERE key = 'alert_cpu_percent'",
+    )
+    .fetch_optional(pool)
+    .await?
+    .and_then(|v| v.parse().ok())
+    .unwrap_or(85.0);
+
+    let alert_memory_percent = sqlx::query_scalar::<_, String>(
+        "SELECT value FROM system_settings WHERE key = 'alert_memory_percent'",
+    )
+    .fetch_optional(pool)
+    .await?
+    .and_then(|v| v.parse().ok())
+    .unwrap_or(85.0);
+
+    let alert_disk_percent = sqlx::query_scalar::<_, String>(
+        "SELECT value FROM system_settings WHERE key = 'alert_disk_percent'",
+    )
+    .fetch_optional(pool)
+    .await?
+    .and_then(|v| v.parse().ok())
+    .unwrap_or(90.0);
+
     Ok(SettingsResponse {
         auth_path_prefix,
         session_timeout_minutes,
         https_port,
         debug_mode,
+        metrics_sample_interval_seconds,
+        metrics_retention_days,
+        alert_cpu_percent,
+        alert_memory_percent,
+        alert_disk_percent,
     })
 }

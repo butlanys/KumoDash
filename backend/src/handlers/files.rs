@@ -10,6 +10,7 @@ use axum::{
 use rust_i18n::t;
 use serde::Deserialize;
 use tokio::fs::File;
+use tokio::io::AsyncWriteExt;
 use tokio_util::io::ReaderStream;
 use tracing::{debug, info};
 
@@ -242,10 +243,11 @@ pub async fn upload(
     Extension(auth_user): Extension<AuthUser>,
     mut multipart: Multipart,
 ) -> Result<ApiResponse<Vec<FileOperationResult>>, AppError> {
+    const MAX_UPLOAD_SIZE: u64 = 1024 * 1024 * 1024; // 1GB safety limit
     let mut results = Vec::new();
     let mut target_path: Option<String> = None;
 
-    while let Some(field) = multipart.next_field().await.map_err(|e| {
+    while let Some(mut field) = multipart.next_field().await.map_err(|e| {
         AppError::ValidationError(format!("Failed to read multipart field: {}", e))
     })? {
         let name = field.name().unwrap_or("").to_string();
@@ -260,10 +262,6 @@ pub async fn upload(
                 .file_name()
                 .ok_or_else(|| AppError::ValidationError("Missing filename".to_string()))?
                 .to_string();
-
-            let data = field.bytes().await.map_err(|e| {
-                AppError::ValidationError(format!("Failed to read file data: {}", e))
-            })?;
 
             let target_dir = target_path
                 .as_ref()
@@ -281,9 +279,18 @@ pub async fn upload(
                 tokio::fs::create_dir_all(parent).await.ok();
             }
 
-            tokio::fs::write(&path, &data).await.map_err(|e| {
-                AppError::FileWriteError(e.to_string())
-            })?;
+            let mut file = File::create(&path).await.map_err(|e| AppError::FileWriteError(e.to_string()))?;
+            let mut total_written = 0u64;
+
+            while let Some(chunk) = field.chunk().await.map_err(|e| {
+                AppError::ValidationError(format!("Failed to read file chunk: {}", e))
+            })? {
+                total_written += chunk.len() as u64;
+                if total_written > MAX_UPLOAD_SIZE {
+                    return Err(AppError::FileTooLarge(total_written, MAX_UPLOAD_SIZE));
+                }
+                file.write_all(&chunk).await.map_err(|e| AppError::FileWriteError(e.to_string()))?;
+            }
 
             results.push(FileOperationResult {
                 path: path.to_string_lossy().to_string(),

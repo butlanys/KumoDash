@@ -33,6 +33,17 @@ errors.internal.error: "Internal server error"
 errors.settings.invalid_auth_path: "Auth path must start with /"
 errors.settings.invalid_session_timeout: "Session timeout must be between 1-1440 minutes"
 errors.settings.invalid_port: "Port must be between 1-65535"
+errors.settings.invalid_metrics_interval: "Metrics sample interval must be between 10-3600 seconds"
+errors.settings.invalid_metrics_retention: "Metrics retention must be between 1-90 days"
+errors.settings.invalid_alert_threshold: "Alert threshold must be between 1-100"
+
+# systemd errors
+errors.systemd.unavailable: "systemd is unavailable: %{detail}"
+errors.systemd.invalid_unit: "Invalid systemd unit name"
+errors.systemd.invalid_action: "Invalid systemd action"
+errors.systemd.command_failed: "systemd command failed: %{detail}"
+errors.systemd.file_error: "systemd file error: %{detail}"
+errors.systemd.unit_exists: "systemd unit already exists"
 
 # Success messages
 success.setup.completed: "System initialized successfully"

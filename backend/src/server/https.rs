@@ -9,6 +9,7 @@ use tracing::info;
 
 use crate::{
     api::{create_router, AppState},
+    services::SystemMetricsService,
     utils::error::AppError,
 };
 
@@ -101,6 +102,7 @@ impl ServerManager {
             }
         }
 
+        SystemMetricsService::spawn_sampler(state.pool.clone());
         let app = create_router(state);
         axum::serve(listener, app)
             .await

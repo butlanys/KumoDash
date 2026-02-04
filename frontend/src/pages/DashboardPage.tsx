@@ -45,7 +45,6 @@ export default function DashboardPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <DiskCard disks={data.disks} />
-        {/* Placeholder for future cards like top processes */}
       </div>
     </div>
   )

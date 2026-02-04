@@ -1,0 +1,43 @@
+id: kumodash-systemd-auth
+
+info:
+  name: KumoDash systemd Auth
+  author: KumoDash Security Team
+  severity: medium
+  description: Ensure systemd endpoints require authentication
+  tags: auth,systemd,kumodash
+
+http:
+  - raw:
+      - |
+        GET /api/v1/systemd/units HTTP/1.1
+        Host: {{Hostname}}
+
+    matchers-condition: and
+    matchers:
+      - type: status
+        status:
+          - 401
+
+      - type: word
+        words:
+          - "success"
+          - "false"
+        condition: and
+
+  - raw:
+      - |
+        GET /api/v1/systemd/units/ssh.service/file HTTP/1.1
+        Host: {{Hostname}}
+
+    matchers-condition: and
+    matchers:
+      - type: status
+        status:
+          - 401
+
+      - type: word
+        words:
+          - "success"
+          - "false"
+        condition: and

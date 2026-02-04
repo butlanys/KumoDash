@@ -33,6 +33,17 @@ errors.internal.error: "内部服务器错误"
 errors.settings.invalid_auth_path: "认证路径必须以 / 开头"
 errors.settings.invalid_session_timeout: "会话超时时间必须在 1-1440 分钟之间"
 errors.settings.invalid_port: "端口号必须在 1-65535 之间"
+errors.settings.invalid_metrics_interval: "采样间隔必须在 10-3600 秒之间"
+errors.settings.invalid_metrics_retention: "指标保留天数必须在 1-90 天之间"
+errors.settings.invalid_alert_threshold: "告警阈值必须在 1-100 之间"
+
+# systemd 错误
+errors.systemd.unavailable: "systemd 不可用: %{detail}"
+errors.systemd.invalid_unit: "无效的 systemd 服务名称"
+errors.systemd.invalid_action: "无效的 systemd 操作"
+errors.systemd.command_failed: "systemd 命令执行失败: %{detail}"
+errors.systemd.file_error: "systemd 文件操作失败: %{detail}"
+errors.systemd.unit_exists: "systemd 服务已存在"
 
 # 成功消息
 success.setup.completed: "系统初始化成功"

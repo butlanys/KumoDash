@@ -1,0 +1,26 @@
+id: kumodash-system-metrics-auth
+
+info:
+  name: KumoDash System Metrics Auth
+  author: KumoDash Security Team
+  severity: medium
+  description: Ensure metrics endpoint requires authentication
+  tags: auth,system,metrics,kumodash
+
+http:
+  - raw:
+      - |
+        GET /api/v1/system/metrics HTTP/1.1
+        Host: {{Hostname}}
+
+    matchers-condition: and
+    matchers:
+      - type: status
+        status:
+          - 401
+
+      - type: word
+        words:
+          - "success"
+          - "false"
+        condition: and

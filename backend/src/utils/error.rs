@@ -76,6 +76,21 @@ pub enum AppError {
 
     #[error("FILE_EXISTS")]
     FileExists(String),
+
+    #[error("SYSTEMD_UNAVAILABLE")]
+    SystemdUnavailable(String),
+
+    #[error("SYSTEMD_INVALID_UNIT")]
+    SystemdInvalidUnit,
+
+    #[error("SYSTEMD_INVALID_ACTION")]
+    SystemdInvalidAction,
+
+    #[error("SYSTEMD_COMMAND_FAILED")]
+    SystemdCommandFailed(String),
+
+    #[error("SYSTEMD_FILE_ERROR")]
+    SystemdFileError(String),
 }
 
 /// Error response detail
@@ -118,6 +133,11 @@ impl AppError {
             AppError::FileWriteError(_) => "FILE_WRITE_ERROR",
             AppError::FileTooLarge(_, _) => "FILE_TOO_LARGE",
             AppError::FileExists(_) => "FILE_EXISTS",
+            AppError::SystemdUnavailable(_) => "SYSTEMD_UNAVAILABLE",
+            AppError::SystemdInvalidUnit => "SYSTEMD_INVALID_UNIT",
+            AppError::SystemdInvalidAction => "SYSTEMD_INVALID_ACTION",
+            AppError::SystemdCommandFailed(_) => "SYSTEMD_COMMAND_FAILED",
+            AppError::SystemdFileError(_) => "SYSTEMD_FILE_ERROR",
         }
     }
 
@@ -146,6 +166,11 @@ impl AppError {
             AppError::FileWriteError(_) => StatusCode::INTERNAL_SERVER_ERROR,
             AppError::FileTooLarge(_, _) => StatusCode::PAYLOAD_TOO_LARGE,
             AppError::FileExists(_) => StatusCode::CONFLICT,
+            AppError::SystemdUnavailable(_) => StatusCode::SERVICE_UNAVAILABLE,
+            AppError::SystemdInvalidUnit => StatusCode::BAD_REQUEST,
+            AppError::SystemdInvalidAction => StatusCode::BAD_REQUEST,
+            AppError::SystemdCommandFailed(_) => StatusCode::INTERNAL_SERVER_ERROR,
+            AppError::SystemdFileError(_) => StatusCode::INTERNAL_SERVER_ERROR,
         }
     }
 
@@ -174,6 +199,11 @@ impl AppError {
             AppError::FileWriteError(detail) => t!("errors.files.write_error", detail = detail).to_string(),
             AppError::FileTooLarge(size, max) => t!("errors.files.too_large", size = size, max = max).to_string(),
             AppError::FileExists(path) => t!("errors.files.exists", path = path).to_string(),
+            AppError::SystemdUnavailable(detail) => t!("errors.systemd.unavailable", detail = detail).to_string(),
+            AppError::SystemdInvalidUnit => t!("errors.systemd.invalid_unit").to_string(),
+            AppError::SystemdInvalidAction => t!("errors.systemd.invalid_action").to_string(),
+            AppError::SystemdCommandFailed(detail) => t!("errors.systemd.command_failed", detail = detail).to_string(),
+            AppError::SystemdFileError(detail) => t!("errors.systemd.file_error", detail = detail).to_string(),
         }
     }
 }

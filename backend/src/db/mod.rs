@@ -100,6 +100,46 @@ CREATE TABLE IF NOT EXISTS terminal_audit_events (
 
 CREATE INDEX IF NOT EXISTS idx_terminal_audit_session_id ON terminal_audit_events(session_id);
 CREATE INDEX IF NOT EXISTS idx_terminal_audit_created_at ON terminal_audit_events(created_at);
+
+-- System metrics history table
+CREATE TABLE IF NOT EXISTS system_metrics (
+    timestamp INTEGER PRIMARY KEY,
+    cpu_usage REAL NOT NULL,
+    memory_usage_percent REAL NOT NULL,
+    disk_usage_percent REAL NOT NULL,
+    load1 REAL NOT NULL,
+    load5 REAL NOT NULL,
+    load15 REAL NOT NULL,
+    rx_bytes INTEGER NOT NULL,
+    tx_bytes INTEGER NOT NULL,
+    read_bytes INTEGER NOT NULL,
+    write_bytes INTEGER NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_system_metrics_timestamp ON system_metrics(timestamp);
+
+-- System alert events table
+CREATE TABLE IF NOT EXISTS system_alerts (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    metric TEXT NOT NULL,
+    threshold REAL NOT NULL,
+    value REAL NOT NULL,
+    status TEXT NOT NULL,
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_system_alerts_metric ON system_alerts(metric);
+CREATE INDEX IF NOT EXISTS idx_system_alerts_created_at ON system_alerts(created_at);
+
+-- Nodes table (reserved for future multi-node support)
+CREATE TABLE IF NOT EXISTS nodes (
+    id TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    node_type TEXT NOT NULL,
+    address TEXT,
+    status TEXT NOT NULL DEFAULT 'active',
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
 "#;
 
 /// Initialize the SQLite database connection pool

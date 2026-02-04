@@ -1,10 +1,11 @@
 import { useTranslation } from 'react-i18next'
 import { Tabs, Tab } from '@heroui/react'
-import { ShieldCheckIcon, ServerIcon, SwatchIcon, InformationCircleIcon } from '@heroicons/react/24/outline'
+import { ShieldCheckIcon, ServerIcon, SwatchIcon, InformationCircleIcon, ChartBarIcon } from '@heroicons/react/24/outline'
 import { SecuritySettings } from '@/features/settings/components/SecuritySettings'
 import { ServerSettings } from '@/features/settings/components/ServerSettings'
 import { AppearanceSettings } from '@/features/settings/components/AppearanceSettings'
 import { AboutSettings } from '@/features/settings/components/AboutSettings'
+import { MonitoringSettings } from '@/features/settings/components/MonitoringSettings'
 
 export default function SettingsPage() {
   const { t } = useTranslation()
@@ -49,6 +50,20 @@ export default function SettingsPage() {
         >
           <div className="pt-4">
             <ServerSettings />
+          </div>
+        </Tab>
+
+        <Tab
+          key="monitoring"
+          title={
+            <div className="flex items-center gap-2">
+              <ChartBarIcon className="h-4 w-4" />
+              <span>{t('settings.tabs.monitoring')}</span>
+            </div>
+          }
+        >
+          <div className="pt-4">
+            <MonitoringSettings />
           </div>
         </Tab>
 
