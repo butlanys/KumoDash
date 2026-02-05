@@ -2,6 +2,8 @@
 
 use base64::Engine;
 use rust_i18n::t;
+use std::ffi::CStr;
+use std::mem::MaybeUninit;
 use std::os::unix::fs::{MetadataExt, PermissionsExt};
 use std::path::{Path, PathBuf};
 use tokio::fs;
@@ -430,12 +432,8 @@ impl FileService {
         // Get owner and group names
         let uid = metadata.uid();
         let gid = metadata.gid();
-        let owner = users::get_user_by_uid(uid)
-            .map(|u| u.name().to_string_lossy().to_string())
-            .unwrap_or_else(|| uid.to_string());
-        let group = users::get_group_by_gid(gid)
-            .map(|g| g.name().to_string_lossy().to_string())
-            .unwrap_or_else(|| gid.to_string());
+        let owner = lookup_user_name(uid).unwrap_or_else(|| uid.to_string());
+        let group = lookup_group_name(gid).unwrap_or_else(|| gid.to_string());
 
         Ok(FileInfo {
             path: path.to_string_lossy().to_string(),
@@ -544,6 +542,75 @@ impl FileService {
 
         Ok(path)
     }
+}
+
+fn sysconf_size(name: libc::c_int, fallback: usize) -> usize {
+    let size = unsafe { libc::sysconf(name) };
+    if size <= 0 {
+        fallback
+    } else {
+        size as usize
+    }
+}
+
+fn lookup_user_name(uid: u32) -> Option<String> {
+    let mut pwd = MaybeUninit::<libc::passwd>::uninit();
+    let mut result = std::ptr::null_mut();
+    let buf_len = sysconf_size(libc::_SC_GETPW_R_SIZE_MAX, 1024);
+    let mut buf = vec![0u8; buf_len];
+
+    let rc = unsafe {
+        libc::getpwuid_r(
+            uid as libc::uid_t,
+            pwd.as_mut_ptr(),
+            buf.as_mut_ptr() as *mut libc::c_char,
+            buf.len(),
+            &mut result,
+        )
+    };
+
+    if rc != 0 || result.is_null() {
+        return None;
+    }
+
+    let pwd = unsafe { pwd.assume_init() };
+    if pwd.pw_name.is_null() {
+        return None;
+    }
+
+    Some(unsafe { CStr::from_ptr(pwd.pw_name) }
+        .to_string_lossy()
+        .into_owned())
+}
+
+fn lookup_group_name(gid: u32) -> Option<String> {
+    let mut grp = MaybeUninit::<libc::group>::uninit();
+    let mut result = std::ptr::null_mut();
+    let buf_len = sysconf_size(libc::_SC_GETGR_R_SIZE_MAX, 1024);
+    let mut buf = vec![0u8; buf_len];
+
+    let rc = unsafe {
+        libc::getgrgid_r(
+            gid as libc::gid_t,
+            grp.as_mut_ptr(),
+            buf.as_mut_ptr() as *mut libc::c_char,
+            buf.len(),
+            &mut result,
+        )
+    };
+
+    if rc != 0 || result.is_null() {
+        return None;
+    }
+
+    let grp = unsafe { grp.assume_init() };
+    if grp.gr_name.is_null() {
+        return None;
+    }
+
+    Some(unsafe { CStr::from_ptr(grp.gr_name) }
+        .to_string_lossy()
+        .into_owned())
 }
 
 #[cfg(test)]

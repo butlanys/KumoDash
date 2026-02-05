@@ -47,6 +47,7 @@ dialoguer = "0.11"
 rust-i18n = "3"
 chrono = { version = "0.4", features = ["serde"] }
 async-trait = "0.1"
+libc = "0.2"
 
 # System monitoring
 sysinfo = "0.32"
@@ -60,7 +61,6 @@ portable-pty = "0.9"
 
 # File management
 tokio-util = { version = "0.7", features = ["io"] }
-users = "0.11"
 
 [dev-dependencies]
 tower = { version = "0.5", features = ["util"] }
